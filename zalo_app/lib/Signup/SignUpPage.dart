@@ -13,9 +13,9 @@ class SignUpPage extends StatefulWidget {
 class _SignUpPageState extends State<SignUpPage> {
   // firebase_auth.FirebaseAuth firebaseAuth = firebase_auth.FirebaseAuth.instance;
   String countryName = "VN";
-  String countriesCode = "+84";
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _pwdController = TextEditingController();
+  String countryCode = "+84";
+  TextEditingController _controller = TextEditingController();
+  // TextEditingController _pwdController = TextEditingController();
   bool circular = false;
   // AuthClass authClass = AuthClass();
 
@@ -31,7 +31,7 @@ class _SignUpPageState extends State<SignUpPage> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
+      body: Container(
         child: Container(
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
@@ -49,7 +49,29 @@ class _SignUpPageState extends State<SignUpPage> {
               SizedBox(
                 height: 20,
               ),
-              countryCode(),
+              countryCard(),
+              Expanded(child: Container()),
+              InkWell(
+                onTap: () {
+                  showMydialog();
+                },
+                child: Container(
+                  color: Color(0xFF0288D1),
+                  height: 40,
+                  child: Center(
+                    child: Text(
+                      "Tiep tuc",
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
             ],
           ),
         ),
@@ -57,11 +79,15 @@ class _SignUpPageState extends State<SignUpPage> {
     );
   }
 
-  Widget countryCode() {
+  Widget countryCard() {
     return InkWell(
       onTap: () {
         Navigator.push(
-            context, MaterialPageRoute(builder: (builer) => CountryCode()));
+            context,
+            MaterialPageRoute(
+                builder: (builer) => CountryCode(
+                      setCountryData: setCountryData,
+                    )));
       },
       child: Container(
         height: 50,
@@ -85,7 +111,7 @@ class _SignUpPageState extends State<SignUpPage> {
               ),
               child: Center(
                   child: Text(
-                'VN',
+                countryCode,
                 style: TextStyle(
                   fontSize: 20,
                   // fontWeight: FontWeight.bold,
@@ -103,8 +129,8 @@ class _SignUpPageState extends State<SignUpPage> {
                 borderRadius: BorderRadius.circular(10),
                 color: Colors.white,
               ),
-              child: TextField(
-                controller: _emailController,
+              child: TextFormField(
+                controller: _controller,
                 decoration: InputDecoration(
                   border: InputBorder.none,
                   hintText: 'Nhap so dien thoai',
@@ -124,7 +150,57 @@ class _SignUpPageState extends State<SignUpPage> {
   void setCountryData(CountryModel countryModel) {
     setState(() {
       countryName = countryModel.name;
-      countriesCode = countryModel.code;
+      countryCode = countryModel.code;
     });
+    Navigator.pop(context);
+  }
+
+  Future<void> showMydialog() {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: SingleChildScrollView(
+            child: Column(
+              children: [
+                Text(
+                  "Xac nhan so dien thoai " + countryCode,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,),
+                  ),
+                Text(
+                  _controller.text,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,),
+                ),
+                SizedBox(
+                  height: 10
+                  ),
+                Text(
+                  "Ma xac thuc gui toi so dien thoai nay",
+                style: TextStyle(fontSize: 14),
+                  ),
+                ],
+                ),
+              ),
+              actions: [
+                TextButton(onPressed: () {}, 
+                  child: Text(
+                    "Huy", 
+                    style: TextStyle(fontSize: 20, color: Colors.black),
+                      )
+                    ),
+                TextButton(onPressed: () {}, 
+                  child: Text(
+                    "Dong y", 
+                    style: TextStyle(fontSize: 20, color: Colors.blue),
+                      )
+                    ),
+              ],
+        );
+      },
+    );
   }
 }

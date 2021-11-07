@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:zalo_app/model/CountryModel.dart';
+// import 'SignUpPage.dart';
 
 class CountryCode extends StatefulWidget {
-  // const CountryCode({Key key}) : super(key: key);
+  const CountryCode({Key? key, required this.setCountryData}) : super(key: key);
+  final Function setCountryData;
 
   @override
   _CountryCodeState createState() => _CountryCodeState();
@@ -26,47 +28,53 @@ class _CountryCodeState extends State<CountryCode> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        // leading: InkWell(
+        //   onTap: () {
+        //     Navigator.pop(context);
+        //   },
+        // ),
         title: Text('Chon ma khu vuc'),
         actions: [
           IconButton(
-            icon: Icon(Icons.search,
-            
-            color: Colors.white,
-            size: 30,
-            
-          ),
-          onPressed: () {},
+            icon: Icon(
+              Icons.search,
+              color: Colors.white,
+              size: 30,
+            ),
+            onPressed: () {},
           )
         ],
       ),
       body: ListView.builder(
-        itemCount: countries.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(countries[index].name),
-            trailing: Text(countries[index].code),
-            onTap: () {
-              Navigator.pop(context, countries[index]);
-            },
-          );
-        },
-      ),
+          itemCount: countries.length,
+          itemBuilder: (context, index) => card(countries[index])),
     );
   }
 
   Widget card(CountryModel country) {
-      return Card(
-        margin: EdgeInsets.all(0.15),
-        child: Container(
-          height: 60,
-          padding: EdgeInsets.symmetric(horizontal: 20),
-          child: Row(
-            children: [
-              Text(country.name),
-              Text(country.code),
-            ],
-          ),
-        ),
-      );
-    }
+    return InkWell(
+      onTap: () {
+        widget.setCountryData(country);
+      },
+      child: Card(
+          margin: EdgeInsets.all(0.15),
+          child: Container(
+            height: 60,
+            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+            child: Row(
+              children: [
+                Text(country.name),
+                Expanded(
+                    child: Container(
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    country.code,
+                    style: TextStyle(fontSize: 15),
+                  ),
+                ))
+              ],
+            ),
+          )),
+    );
+  }
 }
