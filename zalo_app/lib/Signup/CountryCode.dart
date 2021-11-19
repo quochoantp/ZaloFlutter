@@ -28,11 +28,11 @@ class _CountryCodeState extends State<CountryCode> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // leading: InkWell(
-        //   onTap: () {
-        //     Navigator.pop(context);
-        //   },
-        // ),
+        leading: InkWell(
+          onTap: () {
+            Navigator.pop(context);
+          },
+        ),
         title: Text('Chon ma khu vuc'),
         actions: [
           IconButton(

@@ -8,8 +8,8 @@ void main() {
 class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
-      // theme: ThemeData(
-      //     primaryColor: Color(0xFF0288D1	), accentColor: Color(0x664FC37F)),
+      theme: ThemeData(
+          primaryColor: Color(0xFF0288D1	), accentColor: Color(0x664FC37F)),
       home: SignUpPage(),
     );
   }

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:zalo_app/Signup/OTPScreen.dart';
 import 'package:zalo_app/model/CountryModel.dart';
 
 import 'CountryCode.dart';
@@ -23,13 +25,16 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Tao tai khoan'),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () {},
+        leading: InkWell(
+          onTap: () {
+            Navigator.pop(context);
+          },
+          child: Icon(
+            Icons.arrow_back,
+            color: Colors.white,
           ),
-        ],
+        ),
+        title: Text('Tao tai khoan'),
       ),
       body: Container(
         child: Container(
@@ -39,21 +44,58 @@ class _SignUpPageState extends State<SignUpPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Text(
-                "Nhap so dien thoai cua ban de tao tai khoan moi",
-                style: TextStyle(
-                  fontSize: 13,
-                  color: Colors.black,
+              SizedBox(height: 5),
+              Container(
+                color: Colors.grey[100],
+                height: 30,
+                width: MediaQuery.of(context).size.width,
+                child: Text(
+                  "Nhap so dien thoai cua ban de tao tai khoan moi",
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Colors.black,
+                  ),
                 ),
               ),
               SizedBox(
                 height: 20,
               ),
-              countryCard(),
+              Row(
+                children: [
+                  SizedBox(
+                    width: 25,
+                  ),
+                  countryCard(),
+                  number(),
+                ],
+              ),
               Expanded(child: Container()),
               InkWell(
                 onTap: () {
-                  showMydialog();
+                  if (_controller.text.isEmpty) {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: Text("Thong bao"),
+                          content: Text("Vui long nhap so dien thoai"),
+                          actions: [
+                            TextButton(
+                              child: Text("OK"),
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  } else if (_controller.text.length < 9) {
+                    showMyDialog2();
+                  } else {
+                    showMyDialog1();
+                  }
+                  // showMydialog();
                 },
                 child: Container(
                   color: Color(0xFF0288D1),
@@ -91,7 +133,8 @@ class _SignUpPageState extends State<SignUpPage> {
       },
       child: Container(
         height: 50,
-        width: MediaQuery.of(context).size.width / 1.1,
+        // width: MediaQuery.of(context).size.width / 1.1,
+        width: 80,
         padding: EdgeInsets.symmetric(vertical: 5),
         decoration: BoxDecoration(
             border: Border(
@@ -123,25 +166,44 @@ class _SignUpPageState extends State<SignUpPage> {
               color: Colors.black,
             ),
             Container(
-              width: MediaQuery.of(context).size.width - 150,
+              // width: MediaQuery.of(context).size.width - 150,
               height: 50,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 color: Colors.white,
               ),
-              child: TextFormField(
-                controller: _controller,
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  hintText: 'Nhap so dien thoai',
-                  hintStyle: TextStyle(
-                    fontSize: 15,
-                    color: Colors.grey,
-                  ),
-                ),
-              ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget number() {
+    return Container(
+      height: 50,
+      width: MediaQuery.of(context).size.width / 1.5,
+      padding: EdgeInsets.symmetric(vertical: 5),
+      decoration: BoxDecoration(
+        border: Border(
+        bottom: BorderSide(
+        color: Colors.blue,
+        width: 1.8,
+        ),
+      )),
+      child: TextFormField(
+        controller: _controller,
+        keyboardType: TextInputType.number,
+        inputFormatters: [
+          FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+        ],
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          hintText: 'Nhap so dien thoai',
+          hintStyle: TextStyle(
+            fontSize: 15,
+            color: Colors.grey,
+          ),
         ),
       ),
     );
@@ -155,7 +217,7 @@ class _SignUpPageState extends State<SignUpPage> {
     Navigator.pop(context);
   }
 
-  Future<void> showMydialog() {
+  Future<void> showMyDialog1() {
     return showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -165,40 +227,79 @@ class _SignUpPageState extends State<SignUpPage> {
               children: [
                 Text(
                   "Xac nhan so dien thoai " + countryCode,
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,),
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
                   ),
+                ),
                 Text(
                   _controller.text,
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,),
-                ),
-                SizedBox(
-                  height: 10
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
                   ),
+                ),
+                SizedBox(height: 10),
                 Text(
                   "Ma xac thuc gui toi so dien thoai nay",
-                style: TextStyle(fontSize: 14),
-                  ),
-                ],
+                  style: TextStyle(fontSize: 14),
                 ),
-              ),
-              actions: [
-                TextButton(onPressed: () {}, 
-                  child: Text(
-                    "Huy", 
-                    style: TextStyle(fontSize: 20, color: Colors.black),
-                      )
-                    ),
-                TextButton(onPressed: () {}, 
-                  child: Text(
-                    "Dong y", 
-                    style: TextStyle(fontSize: 20, color: Colors.blue),
-                      )
-                    ),
               ],
+            ),
+          ),
+          actions: [
+            TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  "Tu choi",
+                  style: TextStyle(fontSize: 20, color: Colors.black),
+                )),
+            TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (builder) => 
+                        OTPScreen(
+                          countryCode: countryCode,
+                          number: _controller.text,
+                        )));},
+                child: Text(
+                  "Dong y",
+                  style: TextStyle(fontSize: 20, color: Colors.blue),
+                )),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> showMyDialog2() {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: SingleChildScrollView(
+            child: Column(
+              children: [
+                Text("So dien thoai khong hop le",
+                    style: TextStyle(fontSize: 14, color: Colors.red)),
+                Text("Vui long thu lai sau.",
+                    style: TextStyle(fontSize: 14, color: Colors.red))
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  "Dong y",
+                  style: TextStyle(fontSize: 20, color: Colors.blue),
+                )),
+          ],
         );
       },
     );
