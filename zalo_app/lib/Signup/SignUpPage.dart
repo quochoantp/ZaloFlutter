@@ -90,7 +90,8 @@ class _SignUpPageState extends State<SignUpPage> {
                         );
                       },
                     );
-                  } else if (_controller.text.length < 9) {
+                  } else if (_controller.text.length < 9 ||
+                      _controller.text.length > 11) {
                     showMyDialog2();
                   } else {
                     showMyDialog1();
@@ -185,10 +186,10 @@ class _SignUpPageState extends State<SignUpPage> {
       width: MediaQuery.of(context).size.width / 1.5,
       padding: EdgeInsets.symmetric(vertical: 5),
       decoration: BoxDecoration(
-        border: Border(
+          border: Border(
         bottom: BorderSide(
-        color: Colors.blue,
-        width: 1.8,
+          color: Colors.blue,
+          width: 1.8,
         ),
       )),
       child: TextFormField(
@@ -259,12 +260,14 @@ class _SignUpPageState extends State<SignUpPage> {
             TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (builder) => 
-                        OTPScreen(
-                          countryCode: countryCode,
-                          number: _controller.text,
-                        )));},
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (builder) => OTPScreen(
+                                countryCode: countryCode,
+                                number: _controller.text,
+                              )));
+                },
                 child: Text(
                   "Dong y",
                   style: TextStyle(fontSize: 20, color: Colors.blue),
