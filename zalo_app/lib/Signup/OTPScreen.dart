@@ -4,8 +4,8 @@ import 'package:otp_text_field/style.dart';
 import 'package:zalo_app/Signup/RegisterForm.dart';
 
 class OTPScreen extends StatefulWidget {
-  const OTPScreen({ Key? key, required this.countryCode, required this.number })
-     : super(key: key);
+  const OTPScreen({Key? key, required this.countryCode, required this.number})
+      : super(key: key);
   final String number;
   final String countryCode;
   @override
@@ -31,33 +31,38 @@ class _OTPScreenState extends State<OTPScreen> {
         ),
       ),
       body: Container(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
-        color: Colors.white,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            SizedBox(height: 5,),
-            Container(
-              color: Colors.grey[100],
-              width: MediaQuery.of(context).size.width,
-              height: 30,
-              child: Text(
-                "Vui long khong chia se ma xac thuc de tranh mat tai khoan",
-                style: TextStyle(
-                  fontSize: 13,
-                  color: Colors.black,
+          height: MediaQuery.of(context).size.height,
+          width: MediaQuery.of(context).size.width,
+          color: Colors.white,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: 5,
+              ),
+              Container(
+                color: Colors.grey[100],
+                width: MediaQuery.of(context).size.width,
+                height: 30,
+                child: Text(
+                  "Vui long khong chia se ma xac thuc de tranh mat tai khoan",
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Colors.black,
+                  ),
                 ),
               ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            RichText(
-              text: TextSpan(children:[
+              SizedBox(
+                height: 20,
+              ),
+              RichText(
+                  text: TextSpan(children: [
                 TextSpan(
-                  text: 'Da gui ma OTP den so ' + '(' 
-                    + widget.countryCode + ') ' + widget.number,
+                  text: 'Da gui ma OTP den so ' +
+                      '(' +
+                      widget.countryCode +
+                      ') ' +
+                      widget.number,
                   style: TextStyle(
                     fontSize: 16,
                     color: Colors.black,
@@ -79,9 +84,8 @@ class _OTPScreenState extends State<OTPScreen> {
                     color: Colors.black,
                   ),
                 ),
-              ])
-              ),
-            OTPTextField(
+              ])),
+              OTPTextField(
                 length: 4,
                 width: MediaQuery.of(context).size.width * 0.8,
                 fieldWidth: 30,
@@ -95,36 +99,35 @@ class _OTPScreenState extends State<OTPScreen> {
                   print("Complete" + pin);
                 },
               ),
-            SizedBox(height: 20,),
-            bottomButton('Gui lai ma'),
-            Expanded(child: Container()),
-            InkWell(
-              onTap: () {
-                Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (builer) => RegisterForm()));
-              },
-              child: Container(
-                color: Color(0xFF0288D1),
-                height: 40,
-                child: Center(
-                  child: Text(
-                    "Tiep tuc",
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: Colors.white,
+              SizedBox(
+                height: 20,
+              ),
+              bottomButton('Gui lai ma'),
+              Expanded(child: Container()),
+              InkWell(
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (builer) => RegisterForm()));
+                },
+                child: Container(
+                  color: Color(0xFF0288D1),
+                  height: 40,
+                  child: Center(
+                    child: Text(
+                      "Tiep tuc",
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-            SizedBox(
+              SizedBox(
                 height: 20,
               )
             ],
-          )
-      ),
+          )),
     );
   }
 

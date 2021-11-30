@@ -1,0 +1,7 @@
+[
+{
+  "directory": "/home/dolong/Documents/FileCode/ZaloFlutter/build",
+  "command": "/bin/clang++-10    -g   -o CMakeFiles/zaloo_app.dir/zaloo_app.cpp.o -c /home/dolong/Documents/FileCode/ZaloFlutter/zaloo_app.cpp",
+  "file": "/home/dolong/Documents/FileCode/ZaloFlutter/zaloo_app.cpp"
+}
+]
