@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:otp_text_field/otp_text_field.dart';
 import 'package:otp_text_field/style.dart';
@@ -13,6 +15,9 @@ class OTPScreen extends StatefulWidget {
 }
 
 class _OTPScreenState extends State<OTPScreen> {
+  int start = 30;
+  bool wait = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -102,6 +107,32 @@ class _OTPScreenState extends State<OTPScreen> {
               SizedBox(
                 height: 20,
               ),
+              RichText(
+                  text: TextSpan(
+                children: [
+                  TextSpan(
+                    text: 'Ma gui den trong ',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.black,
+                    ),
+                  ),
+                  TextSpan(
+                    text: '00:$start',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.red,
+                    ),
+                  ),
+                  TextSpan(
+                    text: ' giay',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
+              )),
               bottomButton('Gui lai ma'),
               Expanded(child: Container()),
               InkWell(
@@ -148,5 +179,21 @@ class _OTPScreenState extends State<OTPScreen> {
         ),
       ),
     );
+  }
+
+  void startTimer() {
+    const onsec = Duration(seconds: 1);
+    Timer _timer = Timer.periodic(onsec, (timer) {
+      if (start == 0) {
+        setState(() {
+          timer.cancel();
+          wait = false;
+        });
+      } else {
+        setState(() {
+          start--;
+        });
+      }
+    });
   }
 }
