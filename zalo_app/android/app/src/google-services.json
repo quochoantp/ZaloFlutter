@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "412041911919",
-    "project_id": "appchatproject-d4cb3",
-    "storage_bucket": "appchatproject-d4cb3.appspot.com"
+    "project_number": "25368599390",
+    "project_id": "chatapp-243a7",
+    "storage_bucket": "chatapp-243a7.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:412041911919:android:4b3809bbf56f0ce3e6779a",
+        "mobilesdk_app_id": "1:25368599390:android:4b5fc1f870280aaf9a8dcf",
         "android_client_info": {
-          "package_name": "com.example.zalo_app"
+          "package_name": "com.example.practiceapp"
         }
       },
       "oauth_client": [
         {
-          "client_id": "412041911919-8asn507tcvqro95k18trnf5vj8gcvvcs.apps.googleusercontent.com",
+          "client_id": "25368599390-v7l7m4l2b7k4t3scb7jdq348rrooicl3.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCxPVEK7wXHC2iYOJNo6l5b4kWyQNyq2EQ"
+          "current_key": "AIzaSyCEYVCXoHkAzUHBZ1u7Xi5nx_SB8ZMYRq4"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "412041911919-8asn507tcvqro95k18trnf5vj8gcvvcs.apps.googleusercontent.com",
+              "client_id": "25368599390-v7l7m4l2b7k4t3scb7jdq348rrooicl3.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

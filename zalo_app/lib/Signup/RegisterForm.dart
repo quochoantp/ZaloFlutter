@@ -1,5 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:zalo_app/model/UserModel.dart';
+
+import 'HomeScreen.dart';
 
 class RegisterForm extends StatefulWidget {
   const RegisterForm({Key? key}) : super(key: key);
@@ -10,12 +16,14 @@ class RegisterForm extends StatefulWidget {
 
 class _RegisterFormState extends State<RegisterForm> {
   String gender = 'Nam';
-  String name = '';
+  TextEditingController genderController = TextEditingController();
+  TextEditingController name = TextEditingController();
   late DateTime date;
-  final dateController = TextEditingController();
+  TextEditingController dateController = TextEditingController();
   TextEditingController password = TextEditingController();
   TextEditingController confirmPw = TextEditingController();
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   void dispose() {
@@ -38,6 +46,7 @@ class _RegisterFormState extends State<RegisterForm> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 TextFormField(
+                  controller: name,
                   decoration: InputDecoration(
                     labelText: 'Nhap ten ban muon hien thi',
                   ),
@@ -48,7 +57,7 @@ class _RegisterFormState extends State<RegisterForm> {
                     return null;
                   },
                   onSaved: (value) {
-                    name = value!;
+                    name = value as TextEditingController;
                   },
                 ),
                 SizedBox(height: 16),
@@ -153,15 +162,65 @@ class _RegisterFormState extends State<RegisterForm> {
                   onPressed: () {
                     if (_formkey.currentState!.validate()) {
                       print("successful");
-                      return;
                     } else {
                       print("UnSuccessfull");
                     }
                   },
                 ),
+                //register
               ],
             ),
           ),
         )));
+  }
+
+  Future<void> sigUp() async {
+    if (_formkey.currentState!.validate()) {
+      await _auth
+          .createUserWithEmailAndPassword(email: '', password: password.text)
+          .then((value) => {postDetailsToFirestore()})
+          .catchError((e) {
+        Fluttertoast.showToast(
+            msg: e.message,
+            // toastLength: Toast.LENGTH_SHORT,
+            // gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.red,
+            textColor: Colors.white,
+            fontSize: 16.0);
+      });
+    } else {
+      print("UnSuccessfull");
+    }
+  }
+
+  postDetailsToFirestore() async {
+    // calling our firestore
+    // calling our user model
+    // sedning these values
+
+    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
+    User? user = _auth.currentUser;
+
+    UserModel userModel = UserModel();
+
+    // writing all the values
+    // userModel.email = user!.email;
+    userModel.uid = user!.uid;
+    userModel.name = name.text;
+    userModel.gender = gender;
+    userModel.date = date;
+    userModel.confirmPw = confirmPw.text;
+
+    await firebaseFirestore
+        .collection("users")
+        .doc(user.uid)
+        .set(userModel.toMap());
+    Fluttertoast.showToast(msg: "Account created successfully :) ");
+
+    Navigator.pushAndRemoveUntil(
+        (context),
+        MaterialPageRoute(builder: (context) => HomeScreen()),
+        (route) => false);
   }
 }
