@@ -2,50 +2,38 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:practiceapp/Auth/CountryCode.dart';
 import 'package:practiceapp/Auth/CountryModel.dart';
-import 'package:practiceapp/Auth/Service/auth_service.dart';
-import 'package:practiceapp/Auth/StartPage.dart';
-import 'package:provider/provider.dart';
+import 'package:practiceapp/Auth/SignUp/OTPScreen.dart';
 
-class SignInPage extends StatefulWidget{
-  SignInPage({Key? key}) : super(key: key);
+class SignUpPage extends StatefulWidget {
+  SignUpPage({Key? key}) : super(key: key);
+
   @override
-  _SignInPageState createState() => _SignInPageState();
-
+  _SignUpPageState createState() => _SignUpPageState();
 }
 
-class _SignInPageState extends State<SignInPage>{
-
+class _SignUpPageState extends State<SignUpPage> {
   // firebase_auth.FirebaseAuth firebaseAuth = firebase_auth.FirebaseAuth.instance;
   String countryName = "VN";
   String countryCode = "+84";
-  bool obscure = true;
-
-  TextEditingController _phoneController = TextEditingController();
-  TextEditingController _pwdController = TextEditingController();
+  TextEditingController _controller = TextEditingController();
+  // TextEditingController _pwdController = TextEditingController();
   bool circular = false;
   // AuthClass authClass = AuthClass();
 
   @override
   Widget build(BuildContext context) {
-    final authService = Provider.of<AuthService>(context);
     return Scaffold(
       appBar: AppBar(
         leading: InkWell(
           onTap: () {
             Navigator.pop(context);
           },
-          child: IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const StartPage()),
-              );
-            },
-            color: Colors.white, icon: Icon(Icons.arrow_back),
+          child: Icon(
+            Icons.arrow_back,
+            color: Colors.white,
           ),
         ),
-        title: Text('Dang nhap'),
+        title: Text('Tao tai khoan'),
       ),
       body: Container(
         child: Container(
@@ -80,73 +68,51 @@ class _SignInPageState extends State<SignInPage>{
                   number(),
                 ],
               ),
-              Row(
-                children: [
-                  SizedBox(
-                    width: 25,
-                  ),
-                  password(),
-                ],
-              ),
-              if(authService.errorMessage !='')
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 20, 80, 0),
-                  child: Text(
-                    authService.errorMessage,
-                    style: TextStyle(
-                        color: Colors.red,
-                        fontSize: 15,
-                        fontWeight: FontWeight.bold
+              Expanded(child: Container()),
+              InkWell(
+                onTap: () {
+                  if (_controller.text.isEmpty) {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: Text("Thong bao"),
+                          content: Text("Vui long nhap so dien thoai"),
+                          actions: [
+                            TextButton(
+                              child: Text("OK"),
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  } else if (_controller.text.length < 9 ||
+                      _controller.text.length > 11) {
+                    showMyDialog2();
+                  } else {
+                    showMyDialog1();
+                  }
+                  // showMydialog();
+                },
+                child: Container(
+                  color: Color(0xFF0288D1),
+                  height: 40,
+                  child: Center(
+                    child: Text(
+                      "Tiep tuc",
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 25, 315, 0),
-                child: Text(
-                  "Lấy lại mật khẩu",
-                  style: TextStyle(
-                      color: Colors.lightBlue,
-                      fontSize: 15,
-                      // fontWeight: FontWeight.bold
-                  ),
-                ),
               ),
-              Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                  child: Center(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          if (_phoneController.text.isEmpty) {
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  title: Text("Thong bao"),
-                                  content: Text("Vui long nhap so dien thoai"),
-                                  actions: [
-                                    TextButton(
-                                      child: Text("OK"),
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                          } else if (_phoneController.text.length < 9 ||
-                              _phoneController.text.length > 11) {
-                            showMyDialog2();
-                          } else {
-                            authService.signInWithEmailAndPassword(
-                                _phoneController.text+"@gmail.com", _pwdController.text);
-                          }
-                        },
-                        child: Text(
-                            "Đăng nhập"
-                        ),
-                      )
-                  )
+              SizedBox(
+                height: 20,
               ),
             ],
           ),
@@ -213,13 +179,6 @@ class _SignInPageState extends State<SignInPage>{
     );
   }
 
-
-  void obscurePassword(){
-    setState(() {
-      obscure = !obscure;
-    });
-  }
-
   Widget number() {
     return Container(
       height: 50,
@@ -233,7 +192,7 @@ class _SignInPageState extends State<SignInPage>{
             ),
           )),
       child: TextFormField(
-        controller: _phoneController,
+        controller: _controller,
         keyboardType: TextInputType.number,
         inputFormatters: [
           FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
@@ -247,58 +206,6 @@ class _SignInPageState extends State<SignInPage>{
           ),
         ),
       ),
-
-    );
-  }
-
-  Widget password() {
-    return Container(
-      height: 50,
-      width: MediaQuery.of(context).size.width / 1.2,
-      padding: EdgeInsets.symmetric(vertical: 5),
-      decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(
-              color: Colors.blue,
-              width: 1.8,
-            ),
-          )),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: MediaQuery.of(context).size.width - 150,
-            height: 50,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: Colors.white,
-            ),
-            child: TextField(
-              controller: _pwdController,
-              obscureText: obscure,
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                hintText: 'Mật khẩu',
-                hintStyle: TextStyle(
-                  fontSize: 15,
-                  color: Colors.grey,
-                ),
-              ),
-            ),
-          ),
-          TextButton(
-            onPressed: obscurePassword,
-            child: Text(
-              obscure? "Hiện" : "Ẩn",
-              style: TextStyle(
-                  color: Colors.grey,
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold
-              ),
-            ),
-          )
-        ],
-      ),
     );
   }
 
@@ -310,6 +217,65 @@ class _SignInPageState extends State<SignInPage>{
     Navigator.pop(context);
   }
 
+  Future<void> showMyDialog1() {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: SingleChildScrollView(
+            child: Column(
+              children: [
+                Text(
+                  "Xac nhan so dien thoai " + countryCode,
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  _controller.text,
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 10),
+                Text(
+                  "Ma xac thuc gui toi so dien thoai nay",
+                  style: TextStyle(fontSize: 14),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  "Tu choi",
+                  style: TextStyle(fontSize: 20, color: Colors.black),
+                )),
+            TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (builder) => OTPScreen(
+                            countryCode: countryCode,
+                            number: _controller.text,
+                          )));
+                },
+                child: Text(
+                  "Dong y",
+                  style: TextStyle(fontSize: 20, color: Colors.blue),
+                )),
+          ],
+        );
+      },
+    );
+  }
 
   Future<void> showMyDialog2() {
     return showDialog(
@@ -340,5 +306,4 @@ class _SignInPageState extends State<SignInPage>{
       },
     );
   }
-
 }
