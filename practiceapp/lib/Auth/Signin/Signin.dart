@@ -159,9 +159,11 @@ class _SignInPageState extends State<SignInPage>{
                             });
                             await authService.signInWithEmailAndPassword(
                                 _phoneController.text+"@gmail.com", _pwdController.text).then((val) {
-                              HelperFunctions.saveUserLoggedInSharedPreference(true);
                                   Navigator.pop(context);
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen(),));
+                                  if(val != null) {
+                                    HelperFunctions.saveUserLoggedInSharedPreference(true);
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen(),));
+                                  } ;
                             }
                             );
                           }

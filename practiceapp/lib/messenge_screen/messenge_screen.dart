@@ -16,8 +16,7 @@ class MessageScreen extends StatefulWidget {
 
 class _MessageScreenState extends State<MessageScreen> {
   DatabaseMethods _data = DatabaseMethods();
-  Stream<QuerySnapshot<Map<String, dynamic>>>? chatRoomsStream;
-
+  Stream<QuerySnapshot<Map<String, dynamic>>>? chatRoomsStream ;
   // thông tin user
   getChatRooms(){
     _data.getChatRooms(Constants.myName);
