@@ -1,11 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:practiceapp/Auth/CountryCode.dart';
 import 'package:practiceapp/Auth/CountryModel.dart';
 import 'package:practiceapp/Auth/Service/auth_service.dart';
+import 'package:practiceapp/Auth/Service/constant.dart';
 import 'package:practiceapp/Auth/Service/database.dart';
 import 'package:practiceapp/Auth/Service/helper_function.dart';
 import 'package:practiceapp/Auth/StartPage.dart';
+import 'package:practiceapp/Auth/modals/user.dart';
 import 'package:practiceapp/home_screen/home_screen.dart';
 import 'package:practiceapp/widgets/custom_loading.dart';
 import 'package:provider/provider.dart';
@@ -35,6 +38,26 @@ class _SignInPageState extends State<SignInPage>{
     _authService.signInWithEmailAndPassword(
         _phoneController.text+"@gmail.com", _pwdController.text);
 
+  }
+  getUserInfo() async {
+    Constants.myName = (await HelperFunctions.getUserNameSharedPreference())!;
+    Constants.myEmail = (await HelperFunctions.getUserEmailSharedPreference())!;
+  }
+
+  // lấy danh sách tất cả user
+  Future<List<Users>> getAllUser() async {
+    listUsers.clear();
+    return await FirebaseFirestore.instance
+        .collection("Users")
+        .get()
+        .then((users) {
+      for (final DocumentSnapshot<Map<String, dynamic>> doc in users.docs) {
+        listUsers.add(Users.fromDocumentSnapshot(doc: doc));
+        listUsers.removeWhere((element) =>
+        element.email.replaceAll("@gmail.com", '') == Constants.myEmail);
+      }
+      return listUsers;
+    });
   }
 
   @override
@@ -155,13 +178,18 @@ class _SignInPageState extends State<SignInPage>{
                               });
                               HelperFunctions.saveUserNameSharedPreference(username);
                               HelperFunctions.saveUserEmailSharedPreference(email);
+                              getUserInfo();
+                              getAllUser();
                               print('đăng nhập');
                             });
+
                             await authService.signInWithEmailAndPassword(
                                 _phoneController.text+"@gmail.com", _pwdController.text).then((val) {
-                              HelperFunctions.saveUserLoggedInSharedPreference(true);
                                   Navigator.pop(context);
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen(),));
+                                  if(val != null) {
+                                    HelperFunctions.saveUserLoggedInSharedPreference(true);
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen(),));
+                                  } ;
                             }
                             );
                           }
