@@ -1,8 +1,12 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:practiceapp/Auth/CountryCode.dart';
 import 'package:practiceapp/Auth/CountryModel.dart';
+import 'package:practiceapp/Auth/Service/database.dart';
 import 'package:practiceapp/Auth/SignUp/OTPScreen.dart';
+import 'package:practiceapp/widgets/custom_loading.dart';
 
 class SignUpPage extends StatefulWidget {
   SignUpPage({Key? key}) : super(key: key);
@@ -16,9 +20,8 @@ class _SignUpPageState extends State<SignUpPage> {
   String countryName = "VN";
   String countryCode = "+84";
   TextEditingController _controller = TextEditingController();
-  // TextEditingController _pwdController = TextEditingController();
+  DatabaseMethods dataMethods = DatabaseMethods();
   bool circular = false;
-  // AuthClass authClass = AuthClass();
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +36,7 @@ class _SignUpPageState extends State<SignUpPage> {
             color: Colors.white,
           ),
         ),
-        title: Text('Tao tai khoan'),
+        title: Text('Tạo tài khoản'),
       ),
       body: Container(
         child: Container(
@@ -48,11 +51,13 @@ class _SignUpPageState extends State<SignUpPage> {
                 color: Colors.grey[100],
                 height: 30,
                 width: MediaQuery.of(context).size.width,
-                child: Text(
-                  "Nhap so dien thoai cua ban de tao tai khoan moi",
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: Colors.black,
+                child: Center(
+                  child: Text(
+                    "Nhập số điện thoại để tạo tài khoản mới",
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: Colors.black,
+                    ),
                   ),
                 ),
               ),
@@ -70,14 +75,16 @@ class _SignUpPageState extends State<SignUpPage> {
               ),
               Expanded(child: Container()),
               InkWell(
-                onTap: () {
+                onTap: () async {
+                  showDialog(context: context, builder: (context) => DialogLoading(),);
+                  FocusScope.of(context).unfocus();
                   if (_controller.text.isEmpty) {
                     showDialog(
                       context: context,
                       builder: (context) {
                         return AlertDialog(
-                          title: Text("Thong bao"),
-                          content: Text("Vui long nhap so dien thoai"),
+                          title: Text("Thông báo"),
+                          content: Text("Vui lòng nhập số điện thoại"),
                           actions: [
                             TextButton(
                               child: Text("OK"),
@@ -91,18 +98,24 @@ class _SignUpPageState extends State<SignUpPage> {
                     );
                   } else if (_controller.text.length < 9 ||
                       _controller.text.length > 11) {
+                    Navigator.pop(context);
                     showMyDialog2();
                   } else {
-                    showMyDialog1();
+                    await dataMethods.getUserByUserEmail("${_controller.text}@gmail.com")
+                        .then((val){
+                          if(val.docs.length != 0) {
+                            Navigator.pop(context);
+                            showMyDialog3();
+                          } else showMyDialog1();
+                    });
                   }
-                  // showMydialog();
                 },
                 child: Container(
                   color: Color(0xFF0288D1),
                   height: 40,
                   child: Center(
                     child: Text(
-                      "Tiep tuc",
+                      "Tiếp tục",
                       style: TextStyle(
                         fontSize: 20,
                         color: Colors.white,
@@ -127,7 +140,7 @@ class _SignUpPageState extends State<SignUpPage> {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (builer) => CountryCode(
+                builder: (builder) => CountryCode(
                   setCountryData: setCountryData,
                 )));
       },
@@ -199,7 +212,7 @@ class _SignUpPageState extends State<SignUpPage> {
         ],
         decoration: InputDecoration(
           border: InputBorder.none,
-          hintText: 'Nhap so dien thoai',
+          hintText: 'Nhập số điện thoại',
           hintStyle: TextStyle(
             fontSize: 15,
             color: Colors.grey,
@@ -226,7 +239,7 @@ class _SignUpPageState extends State<SignUpPage> {
             child: Column(
               children: [
                 Text(
-                  "Xac nhan so dien thoai " + countryCode,
+                  "Xác nhận số điện thoại " + countryCode,
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -241,7 +254,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
                 SizedBox(height: 10),
                 Text(
-                  "Ma xac thuc gui toi so dien thoai nay",
+                  "Mã xác thực sẽ gửi tới số điện thoại này",
                   style: TextStyle(fontSize: 14),
                 ),
               ],
@@ -253,7 +266,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   Navigator.pop(context);
                 },
                 child: Text(
-                  "Tu choi",
+                  "Từ chối",
                   style: TextStyle(fontSize: 20, color: Colors.black),
                 )),
             TextButton(
@@ -268,7 +281,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           )));
                 },
                 child: Text(
-                  "Dong y",
+                  "Đồng ý",
                   style: TextStyle(fontSize: 20, color: Colors.blue),
                 )),
           ],
@@ -285,22 +298,59 @@ class _SignUpPageState extends State<SignUpPage> {
           content: SingleChildScrollView(
             child: Column(
               children: [
-                Text("So dien thoai khong hop le",
+                Text("Số điện thoại không hợp lệ",
                     style: TextStyle(fontSize: 14, color: Colors.red)),
-                Text("Vui long thu lai sau.",
+                Text("Vui lòng thử lại!",
                     style: TextStyle(fontSize: 14, color: Colors.red))
               ],
             ),
           ),
           actions: [
-            TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text(
-                  "Dong y",
-                  style: TextStyle(fontSize: 20, color: Colors.blue),
-                )),
+            Center(
+              child: TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text(
+                    "Đồng ý",
+                    style: TextStyle(fontSize: 20, color: Colors.blue),
+                  )),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> showMyDialog3() {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          content: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text("Số điện thoại này đã được đăng ký!",
+                    style: TextStyle(fontSize: 18, color: Colors.red), textAlign: TextAlign.center),
+                SizedBox(height: 20,),
+                Text("Vui lòng đăng nhập hoặc thử lại với số điện thoại khác!",
+                    style: TextStyle(fontSize: 16, color: Colors.black), textAlign: TextAlign.left,)
+              ],
+            ),
+          ),
+          actions: [
+            Center(
+              child: TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text(
+                    "Đồng ý",
+                    style: TextStyle(fontSize: 20, color: Colors.blue),
+                  )),
+            ),
           ],
         );
       },

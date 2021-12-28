@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:math' as math;
 
 class CutomItemCart extends StatelessWidget {
   final IconData icon;
@@ -33,7 +34,10 @@ class CutomItemCart extends StatelessWidget {
           children: [
             Row(
               children: [
-                Icon(icon),
+                Icon(icon, color: Color((math.Random().nextDouble() *
+                    0xFFFFFF)
+                    .toInt())
+                    .withOpacity(1.0),),
                 Padding(
                   padding: const EdgeInsets.only(left: 20),
                   child: Column(
@@ -63,7 +67,7 @@ class CutomItemCart extends StatelessWidget {
                         child: Padding(
                           padding:
                               EdgeInsets.only(right: isShowDivider ? 20 : 0),
-                          child: const Icon(Icons.navigate_next),
+                          child: const Icon(Icons.navigate_next, color: Colors.black54,),
                         )),
                   ),
                 )

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:practiceapp/Auth/Service/auth_service.dart';
+import 'package:practiceapp/Auth/Service/helper_function.dart';
 import 'package:practiceapp/Auth/SignOut/custom_item_card.dart';
 import 'package:provider/provider.dart';
 
@@ -91,7 +92,7 @@ class _SettingScreenState extends State<SettingScreen> {
               onPressed: () {
                 Navigator.pop(context);
               },
-              icon: const Icon(Icons.navigate_before))),
+              icon: const Icon(Icons.navigate_before, size: 35,))),
       body: Column(
         children: [
           Expanded(
@@ -100,8 +101,13 @@ class _SettingScreenState extends State<SettingScreen> {
                 itemBuilder: (BuildContext context, int index) {
                   return GestureDetector(
                     onTap:()  async {
-                      if(index == datas.length-1) await authService.signOut();
-                      Navigator.pushNamedAndRemoveUntil(context, "/signin", (r) => false);
+                      if(index == datas.length -1){
+                        await authService.signOut();
+                        await HelperFunctions.saveUserEmailSharedPreference('');
+                        await HelperFunctions.saveUserNameSharedPreference('');
+                        print('xong');
+                        Navigator.pushNamedAndRemoveUntil(context, "/signin", (r) => false);
+                      }
                     },
                     child : CutomItemCart(
                     isShowRightIcon: true,
@@ -109,7 +115,6 @@ class _SettingScreenState extends State<SettingScreen> {
                     title: datas[index].title,
                     isMargin: datas[index].isMargin,
                     isShowDivider:  !datas[index].isMargin,
-
                   ));
 
 

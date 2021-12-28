@@ -23,7 +23,7 @@ class _OTPScreenState extends State<OTPScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('Nhap ma OTP'),
+        title: Text('Nhập mã OTP'),
         elevation: 0,
         leading: IconButton(
           icon: Icon(
@@ -49,11 +49,13 @@ class _OTPScreenState extends State<OTPScreen> {
                 color: Colors.grey[100],
                 width: MediaQuery.of(context).size.width,
                 height: 30,
-                child: Text(
-                  "Vui long khong chia se ma xac thuc de tranh mat tai khoan",
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: Colors.black,
+                child: Center(
+                  child: Text(
+                    "Vui lòng không chia sẻ mã code tránh mất tài khoản",
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: Colors.black,
+                    ),
                   ),
                 ),
               ),
@@ -63,7 +65,7 @@ class _OTPScreenState extends State<OTPScreen> {
               RichText(
                   text: TextSpan(children: [
                     TextSpan(
-                      text: 'Da gui ma OTP den so ' +
+                      text: 'Đã gửi mã OTP đến số ' +
                           '(' +
                           widget.countryCode +
                           ') ' +
@@ -83,7 +85,7 @@ class _OTPScreenState extends State<OTPScreen> {
                       ),
                     ),
                     TextSpan(
-                      text: 'Vui long dien ma xac nhan vao o ben duoi',
+                      text: 'Vui lòng điền mã xác nhận vào ô bên dưới!',
                       style: TextStyle(
                         fontSize: 14,
                         color: Colors.black,
@@ -107,45 +109,19 @@ class _OTPScreenState extends State<OTPScreen> {
               SizedBox(
                 height: 20,
               ),
-              RichText(
-                  text: TextSpan(
-                    children: [
-                      TextSpan(
-                        text: 'Ma gui den trong ',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.black,
-                        ),
-                      ),
-                      TextSpan(
-                        text: '00:$start',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.red,
-                        ),
-                      ),
-                      TextSpan(
-                        text: ' giay',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ],
-                  )),
-              bottomButton('Gui lai ma'),
+              bottomButton('Gửi lại mã'),
               Expanded(child: Container()),
               InkWell(
                 onTap: () {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (builer) => RegisterForm()));
+                      MaterialPageRoute(builder: (builder) => RegisterForm(number: widget.number,)));
                 },
                 child: Container(
                   color: Color(0xFF0288D1),
                   height: 40,
                   child: Center(
                     child: Text(
-                      "Tiep tuc",
+                      "Xác nhận",
                       style: TextStyle(
                         fontSize: 20,
                         color: Colors.white,
@@ -182,8 +158,8 @@ class _OTPScreenState extends State<OTPScreen> {
   }
 
   void startTimer() {
-    const onsec = Duration(seconds: 1);
-    Timer _timer = Timer.periodic(onsec, (timer) {
+    const onSec = Duration(seconds: 1);
+    Timer _timer = Timer.periodic(onSec, (timer) {
       if (start == 0) {
         setState(() {
           timer.cancel();

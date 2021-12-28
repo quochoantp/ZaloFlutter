@@ -42,7 +42,7 @@ class _StartPageState extends State<StartPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "Tieng Viet",
+                    "Tiếng Việt",
                     style: TextStyle(
                       decoration: TextDecoration.underline,
                     ),
