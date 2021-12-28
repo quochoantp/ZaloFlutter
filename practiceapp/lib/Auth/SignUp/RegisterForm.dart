@@ -1,14 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:practiceapp/Auth/Service/auth_service.dart';
 import 'package:practiceapp/Auth/Service/database.dart';
 import 'package:practiceapp/Auth/Signin/Signin.dart';
-import 'package:practiceapp/home_screen/home_screen.dart';
 
-import '../UserModel2.dart';
 
 
 class RegisterForm extends StatefulWidget {
@@ -27,7 +23,6 @@ class _RegisterFormState extends State<RegisterForm> {
   TextEditingController password = TextEditingController();
   TextEditingController confirmPw = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final FirebaseAuth _auth = FirebaseAuth.instance;
   AuthService _authService = AuthService();
   DatabaseMethods _databaseMethods = DatabaseMethods();
 

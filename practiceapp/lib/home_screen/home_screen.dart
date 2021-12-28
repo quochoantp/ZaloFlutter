@@ -24,7 +24,6 @@ class _HomeScreenState extends State<HomeScreen>
     with AutomaticKeepAliveClientMixin {
   int _selectedIndex = 0;
   PageController pageController = PageController();
-  DatabaseMethods _data = DatabaseMethods();
 
   static List<Widget> _widgetOptions = [
     MessageScreen(),

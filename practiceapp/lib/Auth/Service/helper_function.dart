@@ -1,4 +1,3 @@
-import 'package:practiceapp/Auth/Service/constant.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 class HelperFunctions{
   static String sharedPreferenceUserLoggedInKey = "ISLOGGEDIN";

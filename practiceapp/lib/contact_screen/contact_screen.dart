@@ -16,7 +16,6 @@ class ContactScreen extends StatefulWidget {
 }
 
 class _ContactScreenState extends State<ContactScreen> {
-  DatabaseMethods _data = DatabaseMethods();
   Stream? userStream;
   List<Users> listUsers = [];
   Users? user;

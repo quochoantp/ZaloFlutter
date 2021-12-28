@@ -2,8 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:practiceapp/Auth/Service/constant.dart';
 import 'package:practiceapp/Auth/Service/database.dart';
-import 'package:practiceapp/Auth/Service/helper_function.dart';
-import 'package:practiceapp/Auth/modals/user.dart';
 import 'dart:math' as math;
 
 import 'conversation_screen.dart';

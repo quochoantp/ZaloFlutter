@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:practiceapp/Auth/Service/auth_service.dart';
 import 'package:practiceapp/Auth/Service/constant.dart';
-import 'package:practiceapp/Auth/Service/database.dart';
-import 'package:practiceapp/Auth/StartPage.dart';
 import 'package:practiceapp/Auth/modals/user.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -13,8 +10,6 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  AuthService _authService = AuthService();
-  DatabaseMethods _data = DatabaseMethods();
   Users? users;
 
   @override
@@ -26,24 +21,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white60,
-      body: Column(
-        mainAxisSize: MainAxisSize.max,
-          children: [
+      body: Column(mainAxisSize: MainAxisSize.max, children: [
         _buildInforProfile(),
         _divider(),
-        Column(
-          children: [
-        _cardBig(icon: Icons.qr_code, title: 'Ví Qr' , content: 'Lưu trữ và xuất trình các mã QR quan trọng'),
+        _cardBig(
+            icon: Icons.qr_code,
+            title: 'Ví Qr',
+            content: 'Lưu trữ và xuất trình các mã QR quan trọng'),
         _divider(),
-        _cardBig(icon: Icons.cloud_outlined, title: 'Cloud của tôi' , content: 'Lưu trữ các tin nhắn quan trọng'),
+        _cardBig(
+            icon: Icons.cloud_outlined,
+            title: 'Cloud của tôi',
+            content: 'Lưu trữ các tin nhắn quan trọng'),
         _divider(),
-        _cardSmall(icon1: Icons.shield_outlined, icon2: Icons.lock, title1: 'Tài khoản và bảo mật', title2: 'Quyền riêng tư'),
+        _cardSmall(
+            icon1: Icons.shield_outlined,
+            icon2: Icons.lock,
+            title1: 'Tài khoản và bảo mật',
+            title2: 'Quyền riêng tư'),
         Expanded(
           child: Container(
             color: Colors.grey.withOpacity(0.3),
           ),
-        ),
-          ],
         )
       ]),
     );
@@ -93,7 +92,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _cardBig({required IconData icon, required String title, required String content}) {
+  Widget _cardBig(
+      {required IconData icon,
+      required String title,
+      required String content}) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
       child: Row(
@@ -102,7 +104,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
             icon,
             color: Colors.blue,
           ),
-          SizedBox(width: 20,),
+          SizedBox(
+            width: 20,
+          ),
           Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -114,7 +118,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     color: Colors.black87,
                     fontWeight: FontWeight.w400),
               ),
-              const SizedBox(height: 3,),
+              const SizedBox(
+                height: 3,
+              ),
               Text(
                 content,
                 style: TextStyle(
@@ -129,7 +135,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _cardSmall({required IconData icon1,required IconData icon2, required String title1, required String title2}) {
+  Widget _cardSmall(
+      {required IconData icon1,
+      required IconData icon2,
+      required String title1,
+      required String title2}) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
       child: Column(
@@ -145,7 +155,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     icon1,
                     color: Colors.blue,
                   ),
-                  SizedBox(width: 20,),
+                  SizedBox(
+                    width: 20,
+                  ),
                   Text(
                     title1,
                     style: TextStyle(
@@ -162,9 +174,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 10,),
+          const SizedBox(
+            height: 10,
+          ),
           _dividerMini(),
-          const SizedBox(height: 10,),
+          const SizedBox(
+            height: 10,
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -174,7 +190,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     icon2,
                     color: Colors.blue,
                   ),
-                  SizedBox(width: 20,),
+                  SizedBox(
+                    width: 20,
+                  ),
                   Text(
                     title2,
                     style: TextStyle(
@@ -196,14 +214,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Divider _divider(){
+  Divider _divider() {
     return Divider(
       color: Colors.grey.withOpacity(0.3),
       height: 10,
       thickness: 8,
     );
   }
-  Widget _dividerMini(){
+
+  Widget _dividerMini() {
     return Container(
       margin: const EdgeInsets.only(left: 44),
       child: Divider(
