@@ -25,7 +25,7 @@ class _HomeScreenState extends State<HomeScreen>
   int _selectedIndex = 0;
   PageController pageController = PageController();
 
-  static List<Widget> _widgetOptions = [
+  List<Widget> _widgetOptions = [
     MessageScreen(),
     ContactScreen(),
     StatusScreen(),
