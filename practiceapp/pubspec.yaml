@@ -42,6 +42,7 @@ dependencies:
   flutter_bloc: ^7.1.0
   intl: ^0.17.0
   flutter_svg: ^1.0.0
+  emoji_picker_flutter: ^1.0.8
 
   fluttertoast: ^8.0.8
   otp_text_field: ^1.1.1

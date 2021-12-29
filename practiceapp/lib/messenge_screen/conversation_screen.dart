@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:practiceapp/Auth/Service/constant.dart';
@@ -22,7 +25,21 @@ class _ConversationScreenState extends State<ConversationScreen> {
   final ScrollController _scrollController = new ScrollController();
   late Stream<QuerySnapshot<Map<String, dynamic>>> chatMessagesStream =
       databaseMethods.getConversationMessage(widget.chatRoomId);
+  bool emojiShowing = false;
 
+  _onEmojiSelected(Emoji emoji) {
+    messageController
+      ..text += emoji.emoji
+      ..selection = TextSelection.fromPosition(
+          TextPosition(offset: messageController.text.length));
+  }
+
+  _onBackspacePressed() {
+    messageController
+      ..text = messageController.text.characters.skipLast(1).toString()
+      ..selection = TextSelection.fromPosition(
+          TextPosition(offset: messageController.text.length));
+  }
   Widget chatMessageList() {
     return StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
       stream: chatMessagesStream,
@@ -97,6 +114,20 @@ class _ConversationScreenState extends State<ConversationScreen> {
             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             child: Row(
               children: [
+                Material(
+                  color: Colors.transparent,
+                  child: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        emojiShowing = !emojiShowing;
+                      });
+                    },
+                    icon: const Icon(
+                      Icons.emoji_emotions,
+                      color: Colors.blue,
+                    ),
+                  ),
+                ),
                 Expanded(
                   child: TextFormField(
                     controller: messageController,
@@ -117,6 +148,38 @@ class _ConversationScreenState extends State<ConversationScreen> {
                       size: 30,
                     ))
               ],
+            ),
+          ),
+          Offstage(
+            offstage: !emojiShowing,
+            child: SizedBox(
+              height: 250,
+              child: EmojiPicker(
+                  onEmojiSelected: (Category category, Emoji emoji) {
+                    _onEmojiSelected(emoji);
+                  },
+                  onBackspacePressed: _onBackspacePressed,
+                  config: Config(
+                      columns: 7,
+                      // Issue: https://github.com/flutter/flutter/issues/28894
+                      emojiSizeMax: 32 * (Platform.isIOS ? 1.30 : 1.0),
+                      verticalSpacing: 0,
+                      horizontalSpacing: 0,
+                      initCategory: Category.RECENT,
+                      bgColor: const Color(0xFFF2F2F2),
+                      indicatorColor: Colors.blue,
+                      iconColor: Colors.grey,
+                      iconColorSelected: Colors.blue,
+                      progressIndicatorColor: Colors.blue,
+                      backspaceColor: Colors.blue,
+                      showRecentsTab: true,
+                      recentsLimit: 28,
+                      noRecentsText: 'No Recents',
+                      noRecentsStyle: const TextStyle(
+                          fontSize: 20, color: Colors.black26),
+                      tabIndicatorAnimDuration: kTabScrollDuration,
+                      categoryIcons: const CategoryIcons(),
+                      buttonMode: ButtonMode.MATERIAL)),
             ),
           ),
         ],
