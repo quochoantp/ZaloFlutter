@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:practiceapp/Auth/Service/constant.dart';
 import 'package:practiceapp/Auth/Service/database.dart';
 import 'dart:math' as math;
@@ -15,16 +16,23 @@ class MessageScreen extends StatefulWidget {
 }
 
 class _MessageScreenState extends State<MessageScreen> {
-  DatabaseMethods _data = DatabaseMethods();
+  final DatabaseMethods _data = DatabaseMethods();
   Stream<QuerySnapshot<Map<String, dynamic>>>? chatRoomsStream ;
   // thông tin user
-  getChatRooms(){
-    _data.getChatRooms(Constants.myName);
+  getChatRooms() async {
+    chatRoomsStream = await _data.getChatRoom(Constants.myName);
+    setState(() {});
+  }
+
+  DateTime currentTime = DateTime.now();
+
+  String day(DateTime dateTime){
+    return DateFormat('dd:MM:yyyy').format(dateTime);
   }
 
   @override
   void initState() {
-    chatRoomsStream = _data.getChatRooms(Constants.myName);
+    getChatRooms();
     super.initState();
   }
 
@@ -36,46 +44,60 @@ class _MessageScreenState extends State<MessageScreen> {
         builder: (BuildContext context,
             AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
           if(snapshot.connectionState == ConnectionState.waiting) {
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(),
             );
           }
-            return  snapshot.hasData ? ListView.separated(
+          if(snapshot.hasData){
+            var snt = snapshot.data!.docs;
+            snt.removeWhere((element) => element.data()['time'] == 0);
+            snt.sort((a,b) => b.data()['time'].compareTo(a.data()['time']));
+            return ListView.separated(
               primary: false,
               shrinkWrap: true,
-              padding: EdgeInsets.only(top: 15,bottom: 15, left: 15),
+              padding: const EdgeInsets.only(top: 15,bottom: 15, left: 15),
               itemBuilder: (context, index)  {
-                String chatRoom = snapshot.data!.docs[index].data()['chatroomId'];
-                var list = snapshot.data!.docs[index].data()['users'].toString().replaceAll(']', '').replaceAll('[', '').split(',');
+                var list = snt[index].data()['users'].toString().replaceAll(']', '').replaceAll('[', '').split(',');
+                String chatRoom = snt[index].data()['chatroomId'];
+                DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(snt[index].data()['time']);
                 list.removeWhere((element) => element== Constants.myName);
                 return InkWell(
                   onTap: () {
+                    if(snt[index].data()['sendBy'] != Constants.myEmail)
+                    {
+                      Map<String,dynamic> upDatedRead = {
+                        'readed' : 1,
+                      };
+                      _data.updateLastMessageSend(snt[index].data()['chatroomId'], upDatedRead);
+                    }
                     Navigator.push(context, MaterialPageRoute(builder: (context) => ConversationScreen(chatRoomId: chatRoom ,User: list[0]),));
                   },
                   child: Row(
                     mainAxisSize: MainAxisSize.max,
                     children: [
                       SizedBox.fromSize(
-                        size: Size(55,55),
+                        size: const Size(55,55),
                         child: Container(
                           decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: LinearGradient(
-                                colors: [Color((math.Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0), Colors.lightBlue],
-                              begin: Alignment.centerLeft,
-                              end: Alignment.centerRight
-                            )
+                              shape: BoxShape.circle,
+                              gradient: LinearGradient(
+                                  colors: [Color((math.Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0), Colors.lightBlue],
+                                  begin: Alignment.centerLeft,
+                                  end: Alignment.centerRight
+                              )
                           ),
                           child: Center(
-                            child: Text(list[0].toString().split(' ').last, style: TextStyle(
-                               fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                              color: Colors.white
-                            ),),
+                            child: Text(
+                              list[0].toString().split(' ').last,
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                  color: Colors.white
+                              ),),
                           ),
                         ),
                       ),
-                      SizedBox(width: 10,),
+                      const SizedBox(width: 10,),
                       Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -84,32 +106,32 @@ class _MessageScreenState extends State<MessageScreen> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    list[0],
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 16
+                                    list[0].toString().trimLeft(),
+                                    style: const TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 17
                                     ),
                                   ),
                                   Padding(
-                                    padding: EdgeInsets.only(right: 20),
+                                    padding: const EdgeInsets.only(right: 20),
                                     child: Text(
-                                      '10p',
+                                      showTime(lastMs: dateTime),
                                       style: TextStyle(
-                                        color: Colors.black54,
-                                        fontWeight: FontWeight.w300,
-                                        fontSize: 13
+                                          color:  checkRead(sendBy: snt[index].data()["sendBy"], read: snt[index].data()["readed"]) ? Colors.black54 : Colors.black,
+                                          fontWeight:checkRead(sendBy: snt[index].data()["sendBy"], read: snt[index].data()["readed"]) ? FontWeight.w300 : FontWeight.bold,
+                                          fontSize: 13
                                       ),
                                     ),
                                   ),
                                 ],
                               ),
-                              SizedBox(height: 5,),
+                              const SizedBox(height: 5,),
                               Text(
-                                'tin nhắn...',
+                                "${snt[index].data()["sendBy"] == Constants.myEmail ? 'Bạn: ' : ''}${snt[index].data()["lastMessage"]}",
                                 style: TextStyle(
-                                    color: Colors.black38,
-                                    fontWeight: FontWeight.w400,
+                                    color: checkRead(sendBy: snt[index].data()["sendBy"], read: snt[index].data()["readed"]) ? Colors.black54 : Colors.black,
+                                    fontWeight: checkRead(sendBy: snt[index].data()["sendBy"], read: snt[index].data()["readed"]) ? FontWeight.w400 : FontWeight.bold,
                                     fontSize: 16
                                 ),
                               ),
@@ -123,17 +145,41 @@ class _MessageScreenState extends State<MessageScreen> {
               separatorBuilder: (context, index) => Container(
                 padding: const EdgeInsets.only(left: 70),
                 margin: const EdgeInsets.symmetric(vertical: 10),
-                child: Divider(
+                child: const Divider(
                   height: 0.5,
                   thickness: 0.5,
                   color: Colors.black12,
                 ),
               ),
-              itemCount: snapshot.data!.docs.length,
-          ) :  Container();
+              itemCount: snt.length,
+            );
+          }
+            return const Center(child: CircularProgressIndicator());
         }
       ),
     );
   }
+
+  bool checkRead({required String sendBy, required int read}){
+    if(sendBy == Constants.myEmail){
+      return true;
+    } else {
+      if(read == 0) {
+        return false;
+      } else {
+        return true;
+      }
+    }
+  }
+
+  String showTime({ required DateTime lastMs}){
+    if(day(currentTime) == day(lastMs)){
+      return DateFormat('hh:mm').format(lastMs);
+    } else {
+      return DateFormat('hh:mm, d TM').format(lastMs);
+    }
+  }
 }
+
+
 

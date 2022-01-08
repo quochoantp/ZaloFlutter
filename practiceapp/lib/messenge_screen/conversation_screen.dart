@@ -17,9 +17,9 @@ class ConversationScreen extends StatefulWidget {
 }
 
 class _ConversationScreenState extends State<ConversationScreen> {
-  DatabaseMethods databaseMethods = new DatabaseMethods();
-  TextEditingController messageController = new TextEditingController();
-  final ScrollController _scrollController = new ScrollController();
+  DatabaseMethods databaseMethods = DatabaseMethods();
+  TextEditingController messageController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
   late Stream<QuerySnapshot<Map<String, dynamic>>> chatMessagesStream =
       databaseMethods.getConversationMessage(widget.chatRoomId);
 
@@ -50,8 +50,6 @@ class _ConversationScreenState extends State<ConversationScreen> {
                             .data()['time'] -
                         snapshot.data!
                             .docs[snapshot.data!.docs.length - index -1]
-
-
                             .data()['time']) >= 60000 ,
                   );
                 })
@@ -62,12 +60,22 @@ class _ConversationScreenState extends State<ConversationScreen> {
 
   sendMessage() {
     if (messageController.text.isNotEmpty) {
+      var message = messageController.text;
       Map<String, dynamic> messageMap = {
         "message": messageController.text,
         "sendBy": Constants.myEmail,
         "time": DateTime.now().millisecondsSinceEpoch,
       };
-      databaseMethods.addConversationMessage(widget.chatRoomId, messageMap);
+      databaseMethods.addConversationMessage(widget.chatRoomId, messageMap).then((value) {
+        Map<String, dynamic> lastMessageInfoMap = {
+          "lastMessage": message,
+          "readed": 0,
+          "sendBy": Constants.myEmail,
+          "time": DateTime.now().millisecondsSinceEpoch,
+          "time2": DateTime.now().millisecondsSinceEpoch,
+        };
+        databaseMethods.updateLastMessageSend(widget.chatRoomId, lastMessageInfoMap);
+      });
       messageController.text = "";
     }
   }
@@ -84,7 +92,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
       appBar: AppBar(
         title: Text(
           widget.User,
-          style: TextStyle(
+          style: const TextStyle(
               color: Colors.white, fontSize: 18, fontWeight: FontWeight.w400),
         ),
         centerTitle: false,
@@ -94,13 +102,13 @@ class _ConversationScreenState extends State<ConversationScreen> {
           Expanded(child: chatMessageList()),
           Container(
             height: 60,
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             child: Row(
               children: [
                 Expanded(
                   child: TextFormField(
                     controller: messageController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: 'Nhập tin nhắn..',
                       filled: true,
                       fillColor: Colors.white,
@@ -111,7 +119,7 @@ class _ConversationScreenState extends State<ConversationScreen> {
                     onPressed: () {
                       sendMessage();
                     },
-                    icon: Icon(
+                    icon: const Icon(
                       Icons.send_rounded,
                       color: Colors.lightBlueAccent,
                       size: 30,
@@ -139,15 +147,14 @@ class MessageTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(time);
-    String timeSendMessage = DateFormat('hh:mm').format(dateTime);
     return Container(
       padding: EdgeInsets.only(
           left: isSendByMe ? 0 : 24, right: isSendByMe ? 24 : 0),
-      margin: EdgeInsets.symmetric(vertical: 5),
+      margin: const EdgeInsets.symmetric(vertical: 5),
       width: MediaQuery.of(context).size.width,
       alignment: isSendByMe ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
         decoration: BoxDecoration(
             gradient: LinearGradient(
                 colors: isSendByMe
@@ -157,12 +164,12 @@ class MessageTile extends StatelessWidget {
                         const Color(0xffd9e1e7),
                       ]),
             borderRadius: isSendByMe
-                ? BorderRadius.only(
+                ? const BorderRadius.only(
                     topLeft: Radius.circular(15),
                     topRight: Radius.circular(15),
                     bottomLeft: Radius.circular(15),
                   )
-                : BorderRadius.only(
+                : const BorderRadius.only(
                     topLeft: Radius.circular(15),
                     topRight: Radius.circular(15),
                     bottomRight: Radius.circular(15),
@@ -170,16 +177,28 @@ class MessageTile extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(message, style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.w400), ),
-            SizedBox(height: 3,),
+            Text(message, style: const TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.w400), ),
+            const SizedBox(height: 3,),
             Text(
-              timeSendMessage,
-              style: TextStyle(color: Colors.black54, fontSize: 10),
+              showTime(lastMs: dateTime),
+              style: const TextStyle(color: Colors.black54, fontSize: 10),
               textAlign: TextAlign.right,
             ) ,
           ],
         ),
       ),
     );
+  }
+
+  String showTime({ required DateTime lastMs}){
+    if(day(DateTime.now()) == day(lastMs)){
+      return DateFormat('hh:mm').format(lastMs);
+    } else {
+      return DateFormat('hh:mm, d TM').format(lastMs);
+    }
+  }
+
+  String day(DateTime dateTime){
+    return DateFormat('dd:MM:yyyy').format(dateTime);
   }
 }

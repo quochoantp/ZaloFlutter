@@ -27,28 +27,46 @@ class DatabaseMethods{
     });
   }
 
-  createChatRoom( String chatRoomId, chatRoomMap){
-    FirebaseFirestore.instance.collection("ChatRoom")
-        .doc(chatRoomId).set(chatRoomMap).catchError((e){
-      print(e.toString());
-    });
+  createChatRoom( String chatRoomId, chatRoomMap) async {
+    final snapShot = await FirebaseFirestore.instance
+        .collection("ChatRoom")
+        .doc(chatRoomId)
+        .get();
+    if (snapShot.exists) {
+      // chatroom already exists
+      return true;
+    } else {
+      FirebaseFirestore.instance.collection("ChatRoom")
+          .doc(chatRoomId).set(chatRoomMap).catchError((e){
+        print(e.toString());
+      });
+    }
   }
 
-  addConversationMessage(String ChatRoomId, messageMap) async {
+  Future addConversationMessage(String chatRoomId, messageMap) async {
     await FirebaseFirestore.instance.collection("ChatRoom")
-        .doc(ChatRoomId)
+        .doc(chatRoomId)
         .collection("chats")
         .add(messageMap).catchError((e){ print(e.toString());});
   }
 
-  Stream<QuerySnapshot<Map<String, dynamic>>> getConversationMessage(String ChatRoomId) {
+  updateLastMessageSend(String chatRoomId,lastMessageInfoMap) {
+    return FirebaseFirestore.instance
+        .collection("ChatRoom")
+        .doc(chatRoomId)
+        .update(lastMessageInfoMap);
+  }
+
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> getConversationMessage(String chatRoomId) {
     return FirebaseFirestore.instance.collection("ChatRoom")
-        .doc(ChatRoomId)
+        .doc(chatRoomId)
         .collection("chats")
         .orderBy("time", descending: false)
         .snapshots();
   }
-  Stream<QuerySnapshot<Map<String, dynamic>>> getChatRooms(String email){
+
+  Future<Stream<QuerySnapshot<Map<String, dynamic>>>> getChatRoom(String email) async{
     return FirebaseFirestore.instance
         .collection("ChatRoom")
         .where("users", arrayContains: email)

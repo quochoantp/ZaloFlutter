@@ -68,12 +68,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
               children: [
                 Text(
                   Constants.myName,
-                  style: TextStyle(fontSize: 20),
+                  style: const TextStyle(fontSize: 20),
                 ),
                 const SizedBox(
                   height: 10,
                 ),
-                Text(
+                const Text(
                   'Xem trang cá nhân',
                   style: TextStyle(fontSize: 15, color: Colors.black54),
                 ),
@@ -83,7 +83,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           Expanded(
               child: Container(
                   alignment: Alignment.centerRight,
-                  child: Icon(
+                  child: const Icon(
                     Icons.person,
                     color: Colors.blue,
                   )))
@@ -104,7 +104,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             icon,
             color: Colors.blue,
           ),
-          SizedBox(
+          const SizedBox(
             width: 20,
           ),
           Column(
@@ -113,7 +113,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               Text(
                 title,
-                style: TextStyle(
+                style: const TextStyle(
                     fontSize: 16,
                     color: Colors.black87,
                     fontWeight: FontWeight.w400),
@@ -123,7 +123,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
               Text(
                 content,
-                style: TextStyle(
+                style: const TextStyle(
                     fontSize: 14,
                     color: Colors.black54,
                     fontWeight: FontWeight.w400),
@@ -155,19 +155,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     icon1,
                     color: Colors.blue,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 20,
                   ),
                   Text(
                     title1,
-                    style: TextStyle(
+                    style: const TextStyle(
                         fontSize: 16,
                         color: Colors.black87,
                         fontWeight: FontWeight.w400),
                   ),
                 ],
               ),
-              Icon(
+              const Icon(
                 Icons.arrow_forward_ios,
                 size: 20,
                 color: Colors.black54,
@@ -190,19 +190,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     icon2,
                     color: Colors.blue,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 20,
                   ),
                   Text(
                     title2,
-                    style: TextStyle(
+                    style: const TextStyle(
                         fontSize: 16,
                         color: Colors.black87,
                         fontWeight: FontWeight.w400),
                   ),
                 ],
               ),
-              Icon(
+              const Icon(
                 Icons.arrow_forward_ios,
                 size: 20,
                 color: Colors.black54,

@@ -14,7 +14,7 @@ import 'package:practiceapp/widgets/custom_loading.dart';
 import 'package:provider/provider.dart';
 
 class SignInPage extends StatefulWidget{
-  SignInPage({Key? key}) : super(key: key);
+  const SignInPage({Key? key}) : super(key: key);
   @override
   _SignInPageState createState() => _SignInPageState();
 
@@ -27,14 +27,14 @@ class _SignInPageState extends State<SignInPage>{
   String countryCode = "+84";
   bool obscure = true;
 
-  AuthService _authService = AuthService();
+  final AuthService _authService = AuthService();
   DatabaseMethods databaseMethods = DatabaseMethods();
 
-  TextEditingController _phoneController = TextEditingController();
-  TextEditingController _pwdController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _pwdController = TextEditingController();
   bool circular = false;
 
-  void SignIn(){
+  void signIn(){
     _authService.signInWithEmailAndPassword(
         _phoneController.text+"@gmail.com", _pwdController.text);
 
@@ -77,134 +77,133 @@ class _SignInPageState extends State<SignInPage>{
                     builder: (context) => const StartPage()),
               );
             },
-            color: Colors.white, icon: Icon(Icons.arrow_back),
+            color: Colors.white, icon: const Icon(Icons.arrow_back),
           ),
         ),
-        title: Text('Đăng nhập'),
+        title: const Text('Đăng nhập'),
         centerTitle: true,
       ),
       body: Container(
-        child: Container(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          color: Colors.white,
-          child: Column(
-            // mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(height: 5),
-              Row(
-                children: [
-                  SizedBox(
-                    width: 25,
-                  ),
-                  countryCard(),
-                  number(),
-                ],
-              ),
-              Row(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  SizedBox(
-                    width: 25,
-                  ),
-                  password(),
-                ],
-              ),
-              if(authService.errorMessage !='')
-                Center(
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 20),
-                    child: Text(
-                      authService.errorMessage,
-                      style: TextStyle(
-                          color: Colors.red,
-                          fontSize: 15,
-                          fontWeight: FontWeight.bold
-                      ),
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        color: Colors.white,
+        child: Column(
+          // mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            const SizedBox(height: 5),
+            Row(
+              children: [
+                const SizedBox(
+                  width: 25,
+                ),
+                countryCard(),
+                number(),
+              ],
+            ),
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                const SizedBox(
+                  width: 25,
+                ),
+                password(),
+              ],
+            ),
+            if(authService.errorMessage !='')
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 20),
+                  child: Text(
+                    authService.errorMessage,
+                    style: const TextStyle(
+                        color: Colors.red,
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold
                     ),
                   ),
                 ),
-              SizedBox(height: 25,),
-              Center(
-                child: Text(
-                  "Lấy lại mật khẩu",
-                  style: TextStyle(
-                      color: Colors.lightBlue,
-                      fontSize: 15,
-                      // fontWeight: FontWeight.bold
-                  ),
+              ),
+            const SizedBox(height: 25,),
+            const Center(
+              child: Text(
+                "Lấy lại mật khẩu",
+                style: TextStyle(
+                    color: Colors.lightBlue,
+                    fontSize: 15,
+                    // fontWeight: FontWeight.bold
                 ),
               ),
-              SizedBox(height: 15,),
-              Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                  child: Center(
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          showDialog(context: context, builder: (context) => DialogLoading(),);
-                          if (_phoneController.text.isEmpty) {
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  title: Text("Thông báo"),
-                                  content: Text("Vui lòng nhập số điện thoại"),
-                                  actions: [
-                                    TextButton(
-                                      child: Text("OK"),
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                          } else if (_phoneController.text.length < 9 ||
-                              _phoneController.text.length > 11) {
-                            showMyDialog2();
-                          } else {
-                            await databaseMethods.getUserByUserEmail("${_phoneController.text}@gmail.com")
-                                .then((val){
-                              String username ='';
-                              String email  ='';
-                              val.docs.forEach((element) {
-                                username = element["name"];
-                                email = element["email"].replaceAll("@gmail.com", '');
-                                print("username:" + username);
-                                print("email:" + email);
-                              });
-                              HelperFunctions.saveUserNameSharedPreference(username);
-                              HelperFunctions.saveUserEmailSharedPreference(email);
-                              getUserInfo();
-                              getAllUser();
-                              print('đăng nhập');
-                            });
-
-                            await authService.signInWithEmailAndPassword(
-                                _phoneController.text+"@gmail.com", _pwdController.text).then((val) {
-                                  Navigator.pop(context);
-                                  if(val != null) {
-                                    HelperFunctions.saveUserLoggedInSharedPreference(true);
-                                    Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen(),));
-                                  } ;
+            ),
+            const SizedBox(height: 15,),
+            Padding(
+                padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                child: Center(
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        showDialog(context: context, builder: (context) => const DialogLoading(),);
+                        if (_phoneController.text.isEmpty) {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: const Text("Thông báo"),
+                                content: const Text("Vui lòng nhập số điện thoại"),
+                                actions: [
+                                  TextButton(
+                                    child: const Text("OK"),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        } else if (_phoneController.text.length < 9 ||
+                            _phoneController.text.length > 11) {
+                          showMyDialog2();
+                        } else {
+                          await databaseMethods.getUserByUserEmail("${_phoneController.text}@gmail.com")
+                              .then((val){
+                            String username ='';
+                            String email  ='';
+                            for (var element in val.docs) {
+                              username = element["name"];
+                              email = element["email"].replaceAll("@gmail.com", '');
+                              Constants.myName = username;
+                              Constants.myEmail = email;
+                              print("username:" + Constants.myName);
+                              print("email:" + Constants.myEmail);
                             }
-                            );
+                            HelperFunctions.saveUserNameSharedPreference(username);
+                            HelperFunctions.saveUserEmailSharedPreference(email);
+                            getUserInfo();
+                            getAllUser();
+                            print('đăng nhập');
+                          });
+                          await authService.signInWithEmailAndPassword(
+                              _phoneController.text+"@gmail.com", _pwdController.text).then((val) {
+                                Navigator.pop(context);
+                                if(val != null) {
+                                  HelperFunctions.saveUserLoggedInSharedPreference(true);
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => const HomeScreen(),));
+                                }
                           }
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 40),
-                          child: Text(
-                              "Đăng nhập", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                          ),
+                          );
+                        }
+                      },
+                      child: const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 40),
+                        child: Text(
+                            "Đăng nhập", style:  TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                         ),
-                      )
-                  )
-              ),
-            ],
-          ),
+                      ),
+                    )
+                )
+            ),
+          ],
         ),
       ),
     );
@@ -223,10 +222,10 @@ class _SignInPageState extends State<SignInPage>{
       child: Container(
         height: 50,
         width: 80,
-        padding: EdgeInsets.symmetric(vertical: 5),
-        decoration: BoxDecoration(
+        padding: const EdgeInsets.symmetric(vertical: 5),
+        decoration: const BoxDecoration(
             border: Border(
-                bottom: BorderSide(
+                bottom:  BorderSide(
                   color: Colors.blue,
                   width: 1.8,
                 ))),
@@ -243,12 +242,12 @@ class _SignInPageState extends State<SignInPage>{
               child: Center(
                   child: Text(
                     countryCode,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 20,
                     ),
                   )),
             ),
-            Icon(
+            const Icon(
               Icons.arrow_drop_down,
               color: Colors.black,
             ),
@@ -276,8 +275,8 @@ class _SignInPageState extends State<SignInPage>{
     return Container(
       height: 50,
       width: MediaQuery.of(context).size.width / 1.5,
-      padding: EdgeInsets.symmetric(vertical: 5),
-      decoration: BoxDecoration(
+      padding: const EdgeInsets.symmetric(vertical: 5),
+      decoration: const BoxDecoration(
           border: Border(
             bottom: BorderSide(
               color: Colors.blue,
@@ -290,10 +289,10 @@ class _SignInPageState extends State<SignInPage>{
         inputFormatters: [
           FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
         ],
-        decoration: InputDecoration(
+        decoration: const InputDecoration(
           border: InputBorder.none,
           hintText: 'Nhập số điện thoại',
-          hintStyle: TextStyle(
+          hintStyle:  TextStyle(
             fontSize: 15,
             color: Colors.grey,
           ),
@@ -306,8 +305,8 @@ class _SignInPageState extends State<SignInPage>{
     return Container(
       height: 50,
       width: MediaQuery.of(context).size.width-50,
-      padding: EdgeInsets.symmetric(vertical: 5),
-      decoration: BoxDecoration(
+      padding: const EdgeInsets.symmetric(vertical: 5),
+      decoration: const BoxDecoration(
           border: Border(
             bottom: BorderSide(
               color: Colors.blue,
@@ -322,7 +321,7 @@ class _SignInPageState extends State<SignInPage>{
             child: TextFormField(
               controller: _pwdController,
               obscureText: obscure,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 border: InputBorder.none,
                 hintText: 'Mật khẩu',
                 hintStyle: TextStyle(
@@ -336,7 +335,7 @@ class _SignInPageState extends State<SignInPage>{
             onPressed: obscurePassword,
             child: Text(
               obscure? "Hiện" : "Ẩn",
-              style: TextStyle(
+              style: const TextStyle(
                   color: Colors.grey,
                   fontSize: 15,
                   fontWeight: FontWeight.bold
@@ -364,7 +363,7 @@ class _SignInPageState extends State<SignInPage>{
         return AlertDialog(
           content: SingleChildScrollView(
             child: Column(
-              children: [
+              children: const [
                 Text("Số điện thoại không hợp lệ!",
                     style: TextStyle(fontSize: 14, color: Colors.red)),
                 Text("Vui lòng nhập lại!",
@@ -377,7 +376,7 @@ class _SignInPageState extends State<SignInPage>{
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                child: Text(
+                child: const Text(
                   "Ok",
                   style: TextStyle(fontSize: 20, color: Colors.blue),
                 )),

@@ -34,10 +34,10 @@ class _CountryCodeState extends State<CountryCode> {
             Navigator.pop(context);
           },
         ),
-        title: Text('Chon ma khu vuc'),
+        title: const Text('Chon ma khu vuc'),
         actions: [
           IconButton(
-            icon: Icon(
+            icon: const Icon(
               Icons.search,
               color: Colors.white,
               size: 30,
@@ -58,10 +58,10 @@ class _CountryCodeState extends State<CountryCode> {
         widget.setCountryData(country);
       },
       child: Card(
-          margin: EdgeInsets.all(0.15),
+          margin: const EdgeInsets.all(0.15),
           child: Container(
             height: 60,
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
             child: Row(
               children: [
                 Text(country.name),
@@ -70,7 +70,7 @@ class _CountryCodeState extends State<CountryCode> {
                       alignment: Alignment.centerRight,
                       child: Text(
                         country.code,
-                        style: TextStyle(fontSize: 15),
+                        style: const TextStyle(fontSize: 15),
                       ),
                     ))
               ],

@@ -25,11 +25,11 @@ class _HomeScreenState extends State<HomeScreen>
   int _selectedIndex = 0;
   PageController pageController = PageController();
 
-  List<Widget> _widgetOptions = [
-    MessageScreen(),
-    ContactScreen(),
-    StatusScreen(),
-    ProfileScreen()
+  final List<Widget> _widgetOptions = [
+    const MessageScreen(),
+    const ContactScreen(),
+    const StatusScreen(),
+    const ProfileScreen()
   ];
 
   void _onItemTapped(int index) {
@@ -49,6 +49,7 @@ class _HomeScreenState extends State<HomeScreen>
   getUserInfo() async {
     Constants.myName = (await HelperFunctions.getUserNameSharedPreference())!;
     Constants.myEmail = (await HelperFunctions.getUserEmailSharedPreference())!;
+    setState(() {});
   }
 
   // lấy danh sách tất cả user
@@ -74,14 +75,14 @@ class _HomeScreenState extends State<HomeScreen>
       appBar: AppBar(
         leading: Container(
           margin: const EdgeInsets.all(8.0),
-          child: Icon(
+          child: const Icon(
             Icons.search_outlined,
             color: Colors.white,
             size: 32,
           ),
         ),
         title: Container(
-          margin: EdgeInsets.only(left: 0),
+          margin: const EdgeInsets.only(left: 0),
           child: CustomTextFieldNonBorder(
             hintText: 'Tìm kiếm bạn bè . . .',
             readOnly: true,
@@ -100,16 +101,16 @@ class _HomeScreenState extends State<HomeScreen>
                           builder: (context) => const SettingScreen()),
                     );
                   },
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 15),
-                    child: const Icon(Icons.settings, color: Colors.white),
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 15),
+                    child: Icon(Icons.settings, color: Colors.white),
                   ))
               : _selectedIndex == 0
                   ? Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Row(children: [
+                    child: Row(children: const [
                       Icon(Icons.qr_code_scanner_outlined, color: Colors.white,),
-                      const SizedBox(width: 15,),
+                      SizedBox(width: 15,),
                       Icon(Icons.add, color: Colors.white, size: 35,),
           ],),
                   )
@@ -117,15 +118,15 @@ class _HomeScreenState extends State<HomeScreen>
           _selectedIndex == 2
                   ? Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Row(children: [
+                    child: Row(children: const [
                       Icon(Icons.image_search, color: Colors.white,size: 30),
-                      const SizedBox(width: 15,),
+                      SizedBox(width: 15,),
                       Icon(Icons.notifications_none_outlined, color: Colors.white, size: 30,),
           ],),
                   )
                   : _selectedIndex == 1
-                  ? Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                  ? const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10),
                     child: Icon(Icons.person_add_alt, color: Colors.white, size: 30,),
                   )
                   : Container(),
@@ -156,7 +157,7 @@ class _HomeScreenState extends State<HomeScreen>
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedLabelStyle: TextStyle(
+        selectedLabelStyle: const TextStyle(
             color: Colors.blue, fontWeight: FontWeight.w500, fontSize: 13),
         selectedItemColor: Colors.blue,
         unselectedItemColor: Colors.grey,
@@ -186,17 +187,18 @@ class CustomSearchDelegate extends SearchDelegate {
         "chatroomId": chatRoomId
       };
       DatabaseMethods().createChatRoom(chatRoomId, chatRoomMap);
-      print("${Constants.myName}");
+      // ignore: avoid_print
+      print(Constants.myName);
       Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => new ConversationScreen(
+              builder: (context) => ConversationScreen(
                     chatRoomId: chatRoomId,
                     User: userName,
                   )));
     } else {
       print("you cannot send message to yourself");
-      print("${Constants.myName}");
+      print(Constants.myName);
     }
   }
 
@@ -247,9 +249,9 @@ class CustomSearchDelegate extends SearchDelegate {
     return ListView.separated(
       primary: false,
       shrinkWrap: true,
-      padding: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+      padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
       itemCount: matchQuery.length >= 5 ? 5 : matchQuery.length,
-      separatorBuilder: (context, index) => SizedBox(
+      separatorBuilder: (context, index) => const SizedBox(
         height: 15,
       ),
       itemBuilder: (context, index) {
@@ -265,7 +267,7 @@ class CustomSearchDelegate extends SearchDelegate {
               Flexible(
                   flex: 2,
                   child: SizedBox.fromSize(
-                    size: Size(60, 60),
+                    size: const Size(60, 60),
                     child: Container(
                       decoration: BoxDecoration(
                           shape: BoxShape.circle,
@@ -281,7 +283,7 @@ class CustomSearchDelegate extends SearchDelegate {
                       child: Center(
                         child: Text(
                           result.name.split(' ').last,
-                          style: TextStyle(
+                          style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 18,
                               color: Colors.white),
@@ -289,7 +291,7 @@ class CustomSearchDelegate extends SearchDelegate {
                       ),
                     ),
                   )),
-              SizedBox(
+              const SizedBox(
                 width: 5,
               ),
               Flexible(
@@ -299,7 +301,7 @@ class CustomSearchDelegate extends SearchDelegate {
                     children: [
                       Text(
                         result.name,
-                        style: TextStyle(
+                        style: const TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.w400,
                             fontSize: 16),
@@ -307,11 +309,11 @@ class CustomSearchDelegate extends SearchDelegate {
                       const SizedBox(height: 5,),
                       Row(
                         children: [
-                          Icon(Icons.phone),
+                          const Icon(Icons.phone),
                           const SizedBox(width: 10,),
                           Text(
                             result.email.replaceAll("@gmail.com", ''),
-                            style: TextStyle(
+                            style: const TextStyle(
                                 color: Colors.blueAccent,
                                 fontWeight: FontWeight.w400,
                                 fontSize: 14),
@@ -340,9 +342,9 @@ class CustomSearchDelegate extends SearchDelegate {
       ListView.separated(
       primary: false,
       shrinkWrap: true,
-      padding: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+      padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
       itemCount: matchQuery.length >= 5 ? 5 : matchQuery.length,
-      separatorBuilder: (context, index) => SizedBox(
+      separatorBuilder: (context, index) => const SizedBox(
         height: 15,
       ),
       itemBuilder: (context, index) {
@@ -358,7 +360,7 @@ class CustomSearchDelegate extends SearchDelegate {
               Flexible(
                   flex: 2,
                   child: SizedBox.fromSize(
-                    size: Size(60, 60),
+                    size: const Size(60, 60),
                     child: Container(
                       decoration: BoxDecoration(
                           shape: BoxShape.circle,
@@ -374,7 +376,7 @@ class CustomSearchDelegate extends SearchDelegate {
                       child: Center(
                         child: Text(
                           result.name.split(' ').last,
-                          style: TextStyle(
+                          style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 18,
                               color: Colors.white),
@@ -382,7 +384,7 @@ class CustomSearchDelegate extends SearchDelegate {
                       ),
                     ),
                   )),
-              SizedBox(
+              const SizedBox(
                 width: 5,
               ),
               Flexible(
@@ -392,7 +394,7 @@ class CustomSearchDelegate extends SearchDelegate {
                     children: [
                       Text(
                         result.name,
-                        style: TextStyle(
+                        style: const TextStyle(
                             color: Colors.black,
                             fontWeight: FontWeight.w400,
                             fontSize: 18),
@@ -400,11 +402,11 @@ class CustomSearchDelegate extends SearchDelegate {
                       const SizedBox(height: 5,),
                       Row(
                         children: [
-                          Icon(Icons.phone, size: 15,),
+                          const Icon(Icons.phone, size: 15,),
                           const SizedBox(width: 5,),
                           Text(
                             result.email.replaceAll("@gmail.com", ''),
-                            style: TextStyle(
+                            style: const TextStyle(
                                 color: Colors.blueAccent,
                                 fontWeight: FontWeight.w400,
                                 fontSize: 14),

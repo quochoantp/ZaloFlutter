@@ -1,6 +1,4 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:practiceapp/Auth/Service/constant.dart';
 import 'package:practiceapp/Auth/Service/database.dart';
@@ -31,6 +29,11 @@ class _ContactScreenState extends State<ContactScreen> {
       List<String> users = [userName, Constants.myName ];
       Map<String, dynamic> chatRoomMap = {
         "users" : users,
+        "lastMessage":'',
+        "sendBy":'',
+        "readed": 0,
+        "time": 0,
+        "time2": 0,
         "chatroomId" :chatRoomId
       };
       DatabaseMethods().createChatRoom(chatRoomId, chatRoomMap);
@@ -69,7 +72,7 @@ class _ContactScreenState extends State<ContactScreen> {
         child: Column(
           children: [
             Container(
-              padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 children: [
@@ -82,7 +85,7 @@ class _ContactScreenState extends State<ContactScreen> {
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
+                        children: const [
                           Icon(
                             Icons.person_add,
                             color: Colors.lightBlue,
@@ -108,12 +111,12 @@ class _ContactScreenState extends State<ContactScreen> {
              StreamBuilder<List<Users>>(
                stream: getAllUser(),
                builder: (context, userSnapshot) {
-                 return userSnapshot.connectionState == ConnectionState.waiting ? Center(
-                   child: CircularProgressIndicator(),
+                 return userSnapshot.connectionState == ConnectionState.waiting ? const Center(
+                   child:  CircularProgressIndicator(),
                  ) : ListView.builder(
                   primary: false,
                   shrinkWrap: true,
-                  padding: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+                  padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
                   itemBuilder: (context, index) {
                     Users user = userSnapshot.data![index];
                     return user.email.replaceAll('@gmail.com', '') != Constants.myEmail?  InkWell(
@@ -127,7 +130,7 @@ class _ContactScreenState extends State<ContactScreen> {
                             Flexible(
                                 flex: 2,
                                 child: SizedBox.fromSize(
-                                  size: Size(55,55),
+                                  size: const Size(55,55),
                                   child: Container(
                                     decoration: BoxDecoration(
                                         shape: BoxShape.circle,
@@ -144,7 +147,7 @@ class _ContactScreenState extends State<ContactScreen> {
                                     child: Center(
                                       child: Text(
                                         user.name.split(' ').last,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 18,
                                             color: Colors.white),
@@ -152,12 +155,12 @@ class _ContactScreenState extends State<ContactScreen> {
                                     ),
                                   ),
                                 )),
-                            SizedBox(width: 10,),
+                            const SizedBox(width: 10,),
                             Flexible(
                                 flex: 7,
                                 child: Text(
                                   user.name,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       color: Colors.black,
                                       fontWeight: FontWeight.w400,
                                       fontSize: 18),
