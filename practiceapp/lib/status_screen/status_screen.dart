@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:practiceapp/status_screen/diary.dart';
 
 class StatusScreen extends StatefulWidget {
   const StatusScreen({Key? key}) : super(key: key);
@@ -10,8 +11,6 @@ class StatusScreen extends StatefulWidget {
 class _StatusScreenState extends State<StatusScreen> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(child: Text(" StatusScreen")),
-    );
+    return Diary();
   }
 }
