@@ -19,12 +19,18 @@ class Diary extends StatelessWidget{
               child: CreatePostContainer(),
             ),
             SliverToBoxAdapter(
-              child: PostContainer(
-                caption: 'Hello App',
-                name: Constants.myName,
-                time_ago: '1 hour ago',
-                imageUrl: 'https://interactive-examples.mdn.mozilla.net/media/cc0-images/grapefruit-slice-332-332.jpg',
-                avatarUrl: 'https://scr.vn/wp-content/uploads/2020/08/%E1%BA%A2nh-hot-girl-l%C3%A0m-avt.jpg',
+              child: ListView.separated(
+                shrinkWrap: true,
+                primary: false,
+                itemCount: 20,
+                separatorBuilder: (context, index) => const SizedBox(height: 5,),
+                itemBuilder:(context, index) => PostContainer(
+                  caption: 'Hello App',
+                  name: Constants.myName,
+                  time_ago: '1 hour ago',
+                  imageUrl: 'https://interactive-examples.mdn.mozilla.net/media/cc0-images/grapefruit-slice-332-332.jpg',
+                  avatarUrl: 'https://scr.vn/wp-content/uploads/2020/08/%E1%BA%A2nh-hot-girl-l%C3%A0m-avt.jpg',
+                ),
               ),
             ),
           ],

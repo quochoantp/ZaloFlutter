@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:practiceapp/Auth/Service/constant.dart';
 import 'package:practiceapp/Auth/Service/database.dart';
@@ -118,14 +119,25 @@ class _ConversationScreenState extends State<ConversationScreen> {
         children: [
           Expanded(child: chatMessageList()),
           Container(
-            height: 60,
+            // height: 60,
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black38,
+                  blurRadius: 4,
+                )
+              ]
+            ),
             child: Row(
               children: [
                 Material(
                   color: Colors.transparent,
                   child: IconButton(
-                    onPressed: () {
+                    onPressed: () async {
+                      await SystemChannels.textInput.invokeMethod('TextInput.hide');
+                      await Future.delayed(const Duration(milliseconds: 10));
                       setState(() {
                         emojiShowing = !emojiShowing;
                       });
@@ -139,9 +151,19 @@ class _ConversationScreenState extends State<ConversationScreen> {
                 Expanded(
                   child: TextFormField(
                     controller: messageController,
+                    onTap: () async {
+                      await Future.delayed(const Duration(milliseconds: 10));
+                      setState(() {
+                        emojiShowing = false;
+                      });
+                    },
+                    maxLines: null,
                     decoration: const InputDecoration(
-                      hintText: 'Nhập tin nhắn..',
-                      filled: true,
+                      hintText: 'Nhập tin nhắn...',
+                      filled: false,
+                      focusedBorder: InputBorder.none,
+                      enabledBorder: InputBorder.none,
+                      border: InputBorder.none,
                       fillColor: Colors.white,
                     ),
                   ),
@@ -218,6 +240,7 @@ class MessageTile extends StatelessWidget {
       alignment: isSendByMe ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+        margin: isSendByMe ? const EdgeInsets.only(left: 80) : const EdgeInsets.only(right: 80),
         decoration: BoxDecoration(
             gradient: LinearGradient(
                 colors: isSendByMe
@@ -260,7 +283,6 @@ class MessageTile extends StatelessWidget {
       return DateFormat('hh:mm, d TM').format(lastMs);
     }
   }
-
   String day(DateTime dateTime){
     return DateFormat('dd:MM:yyyy').format(dateTime);
   }

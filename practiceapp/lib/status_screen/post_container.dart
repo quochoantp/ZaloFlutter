@@ -92,9 +92,13 @@ class _PostHeader extends StatelessWidget{
   }
 }
 
-class _PostStats extends StatelessWidget{
-  bool liked = false;
+class _PostStats extends StatefulWidget{
+  @override
+  State<_PostStats> createState() => _PostStatsState();
+}
 
+class _PostStatsState extends State<_PostStats> {
+  bool liked = false;
 
   @override
   Widget build(BuildContext context) {
@@ -102,7 +106,9 @@ class _PostStats extends StatelessWidget{
       children: [
         TextButton.icon(
          onPressed: (){
-           liked = !liked;
+           setState((){
+             liked = !liked;
+           });
          },
 
           icon: !liked ? Icon(
