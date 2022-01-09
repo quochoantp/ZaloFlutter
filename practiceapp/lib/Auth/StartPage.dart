@@ -14,9 +14,9 @@ class _StartPageState extends State<StartPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SizedBox(
-          height: MediaQuery.of(context).size.height,
+          height: MediaQuery.of(context).size.height + 44,
           width: MediaQuery.of(context).size.width,
-          child: Column(
+        child: Column(
             children: [
               const SizedBox(
                 height: 200,
@@ -30,7 +30,7 @@ class _StartPageState extends State<StartPage> {
                 ),
               ),
               const SizedBox(
-                height: 250,
+                height: 200,
               ),
               signInButton(),
               const SizedBox(

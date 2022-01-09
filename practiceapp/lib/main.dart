@@ -26,6 +26,7 @@ class MyApp extends StatelessWidget {
           // theme: ThemeData(
           //     primaryColor: Color(0xFF0288D1	), accentColor: Color(0x664FC37F)),
           //home: SignInPage(),
+          debugShowCheckedModeBanner: false,
           initialRoute: '/',
           routes: {
             '/' : (context) => Wrapper(),
