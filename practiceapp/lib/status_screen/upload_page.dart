@@ -2,9 +2,16 @@
 
 import 'dart:io';
 
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:practiceapp/Auth/Service/constant.dart';
+import 'package:practiceapp/Auth/Service/database.dart';
+import 'package:uuid/uuid.dart';
+import 'package:image/image.dart' as ImD;
+
 
 class UploadPage extends StatefulWidget {
   @override
@@ -13,6 +20,8 @@ class UploadPage extends StatefulWidget {
 
 class _UploadPageState extends State<UploadPage> {
    File? file;
+   bool uploading = false;
+   String postId = Uuid().v4();
   final ImagePicker _picker = ImagePicker();
   TextEditingController descriptionTextEditingController = TextEditingController();
 
@@ -36,7 +45,7 @@ class _UploadPageState extends State<UploadPage> {
       maxWidth: 970,
     ) ;
     setState((){
-       this.file = File(imagefile!.path);
+       file = File(imagefile!.path);
     });
   }
    close(){
@@ -94,7 +103,39 @@ class _UploadPageState extends State<UploadPage> {
       file = null;
     });
   }
-
+  compressingPhoto() async {
+     final tDirectory = await getTemporaryDirectory();
+     final path = tDirectory.path;
+     ImD.Image mImageFile = ImD.decodeImage(file!.readAsBytesSync())!;
+     final compressedImageFile = File('$path/img_$postId.jpg')..writeAsBytesSync(ImD.encodeJpg(mImageFile,quality: 85));
+     setState(() {
+       file = compressedImageFile as File?;
+     });
+  }
+   Future<String> uploadImage(imageFile) async {
+     UploadTask uploadTask = storageRef.child("post_$postId.jpg").putFile(imageFile!);
+     TaskSnapshot storageSnap = await uploadTask.whenComplete(() => null);
+     String downloadUrl = await storageSnap.ref.getDownloadURL();
+     return downloadUrl;
+   }
+   createPostInFireStore({required String mediaUrl,required String description,required int time}){
+        postsRef.doc(Constants.myEmail).collection("userPosts").doc(postId).set({"postId":postId,
+        "ownerId":Constants.myEmail,"username":Constants.myEmail,"mediaUrl":mediaUrl,"description":description,"time":time,"likes":{},});
+   }
+   controlUploadAndSave() async{{
+    setState(() {
+      uploading = true;
+    });
+    await compressingPhoto();
+    String mediaUrl = await uploadImage(file);
+    createPostInFireStore(mediaUrl: mediaUrl, description: descriptionTextEditingController.text,time :DateTime.now().millisecondsSinceEpoch);
+    descriptionTextEditingController.clear();
+    setState(() {
+      file = null;
+      uploading = false;
+    });
+  }
+   }
   displayUploadFormScreen(){
     return Scaffold(
       appBar: AppBar(
@@ -103,7 +144,7 @@ class _UploadPageState extends State<UploadPage> {
         title: Text("New Post",style: TextStyle(fontSize: 24.0, color: Colors.black,fontWeight: FontWeight.bold),),
         actions: <Widget>[
           FlatButton(
-            onPressed: ()=> print("tapped"),
+            onPressed: uploading ? null :() => controlUploadAndSave(),
             child: Text("Đăng", style: TextStyle(color: Colors.lightBlue,fontWeight: FontWeight.bold,fontSize: 16.0),),
 
           )
