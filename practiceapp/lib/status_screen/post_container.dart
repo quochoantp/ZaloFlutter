@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:practiceapp/Auth/Service/constant.dart';
 import 'profile_avatar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 class PostContainer extends StatelessWidget{
   final String avatarUrl;
   final String name;
-  final String time_ago;
+  final int time;
   final String caption;
   final String imageUrl;
 
@@ -12,9 +14,28 @@ class PostContainer extends StatelessWidget{
   const PostContainer({Key? key,
     required this.caption,
     required this.avatarUrl,
-    required this.time_ago,
+    required this.time,
     required this.imageUrl,
     required this.name,}) : super(key: key);
+  factory PostContainer.fromDocument({required DocumentSnapshot doc}){
+    return PostContainer(
+      caption: doc["description"],
+      name: Constants.myName,
+      imageUrl: doc["mediaUrl"],
+      time: doc["time"],
+      avatarUrl: 'https://scr.vn/wp-content/uploads/2020/08/%E1%BA%A2nh-hot-girl-l%C3%A0m-avt.jpg',
+    );
+  }
+  String calculateTimeAgo(int time){
+    DateTime now = DateTime.now();
+    DateTime t = DateTime.fromMillisecondsSinceEpoch(time);
+    Duration diff = now.difference(t);
+    if(diff.inMinutes < 1) return diff.inSeconds.toString() + " giây trước";
+    else if(diff.inHours < 1) return diff.inMinutes.toString() + " phút trước";
+    else if(diff.inDays < 1) return diff.inHours.toString() + " giờ trước";
+    else if(diff.inDays >= 1) return diff.inDays.toString() + " ngày trước";
+    return diff.inMinutes.toString();
+  }
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -28,7 +49,7 @@ class PostContainer extends StatelessWidget{
             child:  Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                _PostHeader(avatarUrl: this.avatarUrl,name: this.name,time_ago: this.time_ago),
+                _PostHeader(avatarUrl: this.avatarUrl,name: this.name,time_ago: this.calculateTimeAgo(this.time)),
                 const SizedBox(height: 4.0),
                 Text(caption),
                 imageUrl != null
