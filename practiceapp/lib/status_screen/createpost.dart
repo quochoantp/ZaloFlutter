@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:practiceapp/status_screen/upload_page.dart';
 
 class CreatePostContainer extends StatelessWidget{
 
@@ -19,8 +20,18 @@ class CreatePostContainer extends StatelessWidget{
               ),
               const SizedBox(width: 8.0),
               Expanded(
-                  child: TextField(
-                    decoration: InputDecoration.collapsed(hintText: 'Hôm nay bạn thế nào'),
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => UploadPage()),
+                      );
+                    },
+                    // decoration: InputDecoration.collapsed(hintText: 'Hôm nay bạn thế nào'),
+                    child: Text(
+                    'Hôm nay bạn thế nào?', //title
+                    textAlign: TextAlign.left, //aligment
+                  ),
                   ),
               )
             ],
@@ -32,7 +43,8 @@ class CreatePostContainer extends StatelessWidget{
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 TextButton.icon(
-                  onPressed: (){},
+                  onPressed: (){
+                  },
                   icon: const Icon(
                     Icons.image,
                     color: Colors.green,

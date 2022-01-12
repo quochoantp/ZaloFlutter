@@ -1,9 +1,12 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:practiceapp/Auth/modals/user.dart';
 
 List<Users> listUsers = [];
-
+final Reference storageRef = FirebaseStorage.instance.ref();
+final usersRef = FirebaseFirestore.instance.collection("users");
+final postsRef = FirebaseFirestore.instance.collection("posts");
 class DatabaseMethods{
 
   getUserByUsername(String username) async {
