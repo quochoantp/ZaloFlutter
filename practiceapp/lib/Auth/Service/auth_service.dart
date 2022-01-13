@@ -4,7 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:flutter/cupertino.dart';
 import 'package:practiceapp/Auth/UserModel.dart';
 
-
 class AuthService with ChangeNotifier{
   String _errorMessage = '';
   String get errorMessage => _errorMessage;
@@ -23,29 +22,30 @@ class AuthService with ChangeNotifier{
         String email,
         String password,
       ) async {
-      try{
+    try{
         final credential = await _firebaseAuth.signInWithEmailAndPassword(
             email: email,
             password: password
         );
+        notifyListeners();
         return _userFromFirebase(credential.user);
       } on SocketException catch (e) {
         print('no internet');
-        setMessage('Khong co mang');
+        setMessage('Không có mạng');
       } on auth.FirebaseAuthException catch  (e) {
-        print('Thong tin tai khoan hoac mat khau khong chinh xac');
-        setMessage('Thong tin tai khoan hoac mat khau khong chinh xac');
+        print('Thông tin tài khoản hoặc mật khẩu không chính xác!');
+        setMessage('Thông tin tài khoản hoặc mật khẩu không chính xác!');
       }
-
   }
 
-  Future<User?> createUserWithEmailandPassword(
-      String email,
-      String password,
-      ) async {
-    final credential = await _firebaseAuth.createUserWithEmailAndPassword(
-        email: email, password: password);
-    return _userFromFirebase(credential.user);
+  Future<User?> createUserWithEmailAndPassword(String email, String password,) async {
+    try{
+      final credential = await _firebaseAuth.createUserWithEmailAndPassword(
+          email: email, password: password);
+      return _userFromFirebase(credential.user);
+    } on auth.FirebaseAuthException catch(e){
+      throw e;
+    }
   }
 
   Future<void> signOut() async{

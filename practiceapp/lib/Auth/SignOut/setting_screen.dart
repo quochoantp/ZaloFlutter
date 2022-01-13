@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:practiceapp/Auth/Service/auth_service.dart';
+import 'package:practiceapp/Auth/Service/helper_function.dart';
 import 'package:practiceapp/Auth/SignOut/custom_item_card.dart';
 import 'package:provider/provider.dart';
 
@@ -14,62 +15,67 @@ class _SettingScreenState extends State<SettingScreen> {
   List<Data> datas = [
     Data(
         title: 'Quyền riêng tư',
-        icon: Icons.privacy_tip,
+        icon: Icons.lock,
         onPressed: () {},
         isMargin: false),
     Data(
-        title: 'Quyền riêng tư',
-        icon: Icons.privacy_tip,
+        title: 'Tài khoản và bảo mật',
+        icon: Icons.security,
         onPressed: () {},
         isMargin: false),
     Data(
-        title: 'Quyền riêng tư',
-        icon: Icons.privacy_tip,
+        title: 'Sao lưu và khôi phục',
+        icon: Icons.cloud,
         onPressed: () {},
         isMargin: true),
     Data(
-        title: 'Quyền riêng tư',
-        icon: Icons.privacy_tip,
+        title: 'Giao diện',
+        icon: Icons.brush,
         onPressed: () {},
         isMargin: false),
     Data(
-        title: 'Quyền riêng tư',
-        icon: Icons.privacy_tip,
+        title: 'Thông báo',
+        icon: Icons.notifications,
         onPressed: () {},
         isMargin: false),
     Data(
-        title: 'Quyền riêng tư',
-        icon: Icons.privacy_tip,
+        title: 'Tin nhắn',
+        icon: Icons.message,
         onPressed: () {},
         isMargin: false),
     Data(
-        title: 'Quyền riêng tư',
-        icon: Icons.privacy_tip,
+        title: 'Quản lý dữ liệu và bộ nhớ',
+        icon: Icons.pie_chart,
         onPressed: () {},
         isMargin: false),
     Data(
-        title: 'Quyền riêng tư',
-        icon: Icons.privacy_tip,
+        title: 'Cuộc gọi',
+        icon: Icons.call,
         onPressed: () {},
         isMargin: false),
     Data(
-        title: 'Quyền riêng tư',
-        icon: Icons.privacy_tip,
+        title: 'Nhật ký và khoảnh khắc',
+        icon: Icons.watch_later,
         onPressed: () {},
         isMargin: false),
     Data(
-        title: 'Quyền riêng tư',
-        icon: Icons.privacy_tip,
+        title: 'Danh bạ',
+        icon: Icons.person,
         onPressed: () {},
         isMargin: false),
     Data(
-        title: 'Quyền riêng tư',
-        icon: Icons.privacy_tip,
+        title: 'Ngôn ngữ và phông chữ',
+        icon: Icons.text_format,
+        onPressed: () {},
+        isMargin: false),
+    Data(
+        title: 'Thông tin về Zalo',
+        icon: Icons.info,
         onPressed: () {},
         isMargin: true),
     Data(
-        title: 'Quyền riêng tư',
-        icon: Icons.privacy_tip,
+        title: 'Chuyển tài khoản',
+        icon: Icons.people,
         onPressed: () {},
         isMargin: false),
     Data(
@@ -91,7 +97,7 @@ class _SettingScreenState extends State<SettingScreen> {
               onPressed: () {
                 Navigator.pop(context);
               },
-              icon: const Icon(Icons.navigate_before))),
+              icon: const Icon(Icons.navigate_before, size: 35,))),
       body: Column(
         children: [
           Expanded(
@@ -100,8 +106,13 @@ class _SettingScreenState extends State<SettingScreen> {
                 itemBuilder: (BuildContext context, int index) {
                   return GestureDetector(
                     onTap:()  async {
-                      if(index == datas.length-1) await authService.signOut();
-                      Navigator.pushNamedAndRemoveUntil(context, "/signin", (r) => false);
+                      if(index == datas.length -1){
+                        await authService.signOut();
+                        await HelperFunctions.saveUserEmailSharedPreference('');
+                        await HelperFunctions.saveUserNameSharedPreference('');
+                        print('xong');
+                        Navigator.pushNamedAndRemoveUntil(context, "/signin", (r) => false);
+                      }
                     },
                     child : CutomItemCart(
                     isShowRightIcon: true,
@@ -109,7 +120,6 @@ class _SettingScreenState extends State<SettingScreen> {
                     title: datas[index].title,
                     isMargin: datas[index].isMargin,
                     isShowDivider:  !datas[index].isMargin,
-
                   ));
 
 

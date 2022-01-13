@@ -13,15 +13,15 @@ class _StartPageState extends State<StartPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-          height: MediaQuery.of(context).size.height,
+      body: SizedBox(
+          height: MediaQuery.of(context).size.height + 44,
           width: MediaQuery.of(context).size.width,
-          child: Column(
+        child: Column(
             children: [
-              SizedBox(
+              const SizedBox(
                 height: 200,
               ),
-              Text(
+              const Text(
                 'Zalo',
                 style: TextStyle(
                   fontSize: 100,
@@ -29,20 +29,20 @@ class _StartPageState extends State<StartPage> {
                   color: Colors.blue,
                 ),
               ),
-              SizedBox(
-                height: 250,
+              const SizedBox(
+                height: 200,
               ),
               signInButton(),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               signUpButton(),
               Expanded(child: Container()),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
+                children: const [
                   Text(
-                    "Tieng Viet",
+                    "Tiếng Việt",
                     style: TextStyle(
                       decoration: TextDecoration.underline,
                     ),
@@ -61,7 +61,7 @@ class _StartPageState extends State<StartPage> {
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               )
             ],
@@ -82,9 +82,9 @@ class _StartPageState extends State<StartPage> {
           width: 200,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
-            color: Color(0xFFE0E0E0),
+            color: const Color(0xFFE0E0E0),
           ),
-          child: Center(
+          child: const Center(
             child: Text(
               'Đăng ký',
               style: TextStyle(
@@ -101,7 +101,7 @@ class _StartPageState extends State<StartPage> {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => SignInPage()),
+            MaterialPageRoute(builder: (context) => const SignInPage()),
           );
         },
         child: Container(
@@ -111,7 +111,7 @@ class _StartPageState extends State<StartPage> {
             borderRadius: BorderRadius.circular(20),
             color: Colors.blue,
           ),
-          child: Center(
+          child: const Center(
             child: Text(
               'Đăng nhập',
               style: TextStyle(

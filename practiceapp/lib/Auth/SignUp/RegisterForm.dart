@@ -1,30 +1,30 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
+import 'package:practiceapp/Auth/Service/auth_service.dart';
+import 'package:practiceapp/Auth/Service/database.dart';
 import 'package:practiceapp/Auth/Signin/Signin.dart';
 
-import '../UserModel2.dart';
 
 
 class RegisterForm extends StatefulWidget {
-  const RegisterForm({Key? key}) : super(key: key);
+  final String number;
+  const RegisterForm({Key? key, required this.number}) : super(key: key);
 
   @override
   _RegisterFormState createState() => _RegisterFormState();
 }
 
 class _RegisterFormState extends State<RegisterForm> {
-  String gender = 'Nam';
-  TextEditingController genderController = TextEditingController();
+  String gender = '1';
   TextEditingController name = TextEditingController();
   late DateTime date;
   TextEditingController dateController = TextEditingController();
   TextEditingController password = TextEditingController();
   TextEditingController confirmPw = TextEditingController();
-  final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  AuthService _authService = AuthService();
+  DatabaseMethods _databaseMethods = DatabaseMethods();
 
   @override
   void dispose() {
@@ -36,24 +36,24 @@ class _RegisterFormState extends State<RegisterForm> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Dang ky', style: TextStyle(color: Colors.white)),
+          title: Text('Đăng Ký', style: TextStyle(color: Colors.white)),
         ),
         body: SingleChildScrollView(
             child: Container(
               padding: EdgeInsets.all(16),
               child: Form(
-                key: _formkey,
+                key: _formKey,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     TextFormField(
                       controller: name,
                       decoration: InputDecoration(
-                        labelText: 'Nhap ten ban muon hien thi',
+                        labelText: 'Nhập tên muốn hiển thị',
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Ban chua nhap ten';
+                          return 'Vui lòng nhập tên';
                         }
                         return null;
                       },
@@ -63,50 +63,50 @@ class _RegisterFormState extends State<RegisterForm> {
                     ),
                     SizedBox(height: 16),
                     Text(
-                      'Gioi tinh',
+                      'Giới tính',
                       style: TextStyle(fontSize: 16),
                     ),
                     Row(
                       children: <Widget>[
                         Radio(
-                          value: 'Nam',
+                          value: '1',
                           groupValue: gender,
                           activeColor: Colors.blue,
                           onChanged: (value) {
                             setState(() {
-                              gender = 'Nam';
+                              gender = '1';
                             });
                           },
                         ),
                         Text('Nam'),
                         Radio(
-                          value: 'Nu',
+                          value: '0',
                           groupValue: gender,
                           activeColor: Colors.blue,
                           onChanged: (value) {
                             setState(() {
-                              gender = 'Nu';
+                              gender = '0';
                             });
                           },
                         ),
-                        Text('Nu'),
+                        Text('Nữ'),
                       ],
                     ),
                     TextFormField(
                       readOnly: true,
                       controller: dateController,
-                      decoration: InputDecoration(hintText: 'Ngay sinh'),
+                      decoration: InputDecoration(hintText: 'Ngày sinh'),
                       onTap: () async {
                         var date = await showDatePicker(
                             context: context,
                             initialDate: DateTime.now(),
-                            helpText: 'Chon ngay sinh',
-                            cancelText: 'Huy',
-                            confirmText: 'Xac nhan',
-                            errorInvalidText: 'Khong dung',
-                            errorFormatText: 'Khong dung dinh dang',
+                            helpText: 'Chọn ngày sinh',
+                            cancelText: 'Hủy',
+                            confirmText: 'Xác nhận',
+                            errorInvalidText: 'Không đúng',
+                            errorFormatText: 'Không đúng định dạng',
                             firstDate: DateTime(1900),
-                            lastDate: DateTime(2100));
+                            lastDate: DateTime(DateTime.now().year +1));
                         if (date != null && date != DateTime.now())
                           dateController.text =
                               DateFormat('dd/MM/yyyy').format(date);
@@ -116,7 +116,7 @@ class _RegisterFormState extends State<RegisterForm> {
                       },
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Ban chua nhap ngay sinh';
+                          return 'Vui lòng nhập ngày sinh';
                         }
                         return null;
                       },
@@ -125,15 +125,15 @@ class _RegisterFormState extends State<RegisterForm> {
                     TextFormField(
                       controller: password,
                       decoration: InputDecoration(
-                        labelText: 'Mat khau',
+                        labelText: 'Mật khẩu',
                       ),
                       obscureText: true,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Ban chua nhap mat khau';
+                          return 'Vui lòng nhập mật khẩu';
                         }
                         if (value.length < 6) {
-                          return 'Mat khau phai co it nhat 6 ky tu';
+                          return 'Mật khẩu phải có ít nhất 6 ký tự';
                         }
                         return null;
                       },
@@ -142,15 +142,15 @@ class _RegisterFormState extends State<RegisterForm> {
                     TextFormField(
                       controller: confirmPw,
                       decoration: InputDecoration(
-                        labelText: 'Nhap lai mat khau',
+                        labelText: 'Nhập lại mật khẩu',
                       ),
                       obscureText: true,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Ban chua nhap lai mat khau';
+                          return 'Vui lòng nhập lại mật khẩu';
                         }
                         if (confirmPw.text != password.text) {
-                          return 'Mat khau khong khop';
+                          return 'Mật khẩu không trùng khớp';
                         }
                       },
                       onSaved: (value) {
@@ -158,15 +158,16 @@ class _RegisterFormState extends State<RegisterForm> {
                       },
                     ),
                     SizedBox(height: 16),
-                    ElevatedButton(
-                      child: Text('Dang ky', style: TextStyle(color: Colors.white)),
-                      onPressed: () {
-                        if (_formkey.currentState!.validate()) {
-                          print("successful");
-                        } else {
-                          print("UnSuccessfull");
-                        }
-                      },
+                    Center(
+                      child: ElevatedButton(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 40),
+                          child: Text('Đăng ký', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w500)),
+                        ),
+                        onPressed: () {
+                          sigUp();
+                        },
+                      ),
                     ),
                     //register
                   ],
@@ -176,52 +177,28 @@ class _RegisterFormState extends State<RegisterForm> {
   }
 
   Future<void> sigUp() async {
-    if (_formkey.currentState!.validate()) {
-      await _auth
-          .createUserWithEmailAndPassword(email: '', password: password.text)
-          .then((value) => {postDetailsToFirestore()})
-          .catchError((e) {
-        Fluttertoast.showToast(
-            msg: e.message,
-            // toastLength: Toast.LENGTH_SHORT,
-            // gravity: ToastGravity.BOTTOM,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Colors.red,
-            textColor: Colors.white,
-            fontSize: 16.0);
-      });
+    if (_formKey.currentState!.validate()) {
+      postDetailsToFireStore();
     } else {
-      print("UnSuccessfull");
+      Fluttertoast.showToast(msg: "Đăng ký thất bại! Vui lòng thử lại!");
     }
   }
 
-  postDetailsToFirestore() async {
-    // calling our firestore
-    // calling our user model
-    // sedning these values
+  postDetailsToFireStore() async {
+    _authService.createUserWithEmailAndPassword("${widget.number}@gmail.com", password.text).then((val) {
+      Map<String, String> userInfoMap = {
+        "name": name.text,
+        "email": "${widget.number}@gmail.com",
+        "gender": gender,
+        "birthDay": dateController.text
+      };
+      _databaseMethods.uploadUserInfo(userInfoMap);
+      Fluttertoast.showToast(msg: "Bạn đã đăng ký thành công! Vui lòng đăng nhập để trò chuyện cùng bạn bè!");
+      Navigator.pushAndRemoveUntil(
+          (context),
+          MaterialPageRoute(builder: (context) => SignInPage()),
+              (route) => false);
+    });
 
-    FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
-    User? user = _auth.currentUser;
-
-    UserModel userModel = UserModel();
-
-    // writing all the values
-    // userModel.email = user!.email;
-    userModel.uid = user!.uid;
-    userModel.name = name.text;
-    userModel.gender = gender;
-    userModel.date = date;
-    userModel.confirmPw = confirmPw.text;
-
-    await firebaseFirestore
-        .collection("users")
-        .doc(user.uid)
-        .set(userModel.toMap());
-    Fluttertoast.showToast(msg: "Account created successfully :) ");
-
-    Navigator.pushAndRemoveUntil(
-        (context),
-        MaterialPageRoute(builder: (context) => SignInPage()),
-            (route) => false);
   }
 }
