@@ -5,7 +5,7 @@ import 'package:practiceapp/Auth/modals/user.dart';
 
 List<Users> listUsers = [];
 final Reference storageRef = FirebaseStorage.instance.ref();
-final usersRef = FirebaseFirestore.instance.collection("users");
+final usersRef = FirebaseFirestore.instance.collection("Users");
 final postsRef = FirebaseFirestore.instance.collection("posts");
 class DatabaseMethods{
 

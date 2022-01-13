@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:practiceapp/status_screen/upload_page.dart';
+import 'package:practiceapp/status_screen/upload_text.dart';
 
 class CreatePostContainer extends StatelessWidget{
 
@@ -24,7 +25,7 @@ class CreatePostContainer extends StatelessWidget{
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => UploadPage()),
+                        MaterialPageRoute(builder: (context) => UploadText()),
                       );
                     },
                     // decoration: InputDecoration.collapsed(hintText: 'Hôm nay bạn thế nào'),
@@ -44,6 +45,10 @@ class CreatePostContainer extends StatelessWidget{
               children: [
                 TextButton.icon(
                   onPressed: (){
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => UploadPage()),
+                    );
                   },
                   icon: const Icon(
                     Icons.image,

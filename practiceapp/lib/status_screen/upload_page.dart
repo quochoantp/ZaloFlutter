@@ -119,8 +119,8 @@ class _UploadPageState extends State<UploadPage> {
      return downloadUrl;
    }
    createPostInFireStore({required String mediaUrl,required String description,required int time}){
-        postsRef.doc(Constants.myEmail).collection("userPosts").doc(postId).set({"postId":postId,
-        "ownerId":Constants.myEmail,"username":Constants.myEmail,"mediaUrl":mediaUrl,"description":description,"time":time,"likes":{},});
+        postsRef.doc("0912345678").collection("userPosts").doc(postId).set({"postId":postId,
+        "ownerId":Constants.myEmail,"username":Constants.myName,"mediaUrl":mediaUrl,"description":description,"time":time,"likes":{},});
    }
    controlUploadAndSave() async{{
     setState(() {

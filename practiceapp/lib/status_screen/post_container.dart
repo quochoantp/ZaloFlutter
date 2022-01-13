@@ -20,7 +20,7 @@ class PostContainer extends StatelessWidget{
   factory PostContainer.fromDocument({required DocumentSnapshot doc}){
     return PostContainer(
       caption: doc["description"],
-      name: Constants.myName,
+      name: doc["username"],
       imageUrl: doc["mediaUrl"],
       time: doc["time"],
       avatarUrl: 'https://scr.vn/wp-content/uploads/2020/08/%E1%BA%A2nh-hot-girl-l%C3%A0m-avt.jpg',
@@ -52,13 +52,13 @@ class PostContainer extends StatelessWidget{
                 _PostHeader(avatarUrl: this.avatarUrl,name: this.name,time_ago: this.calculateTimeAgo(this.time)),
                 const SizedBox(height: 4.0),
                 Text(caption),
-                imageUrl != null
+                (imageUrl != null)&&(imageUrl != "")
                     ? const SizedBox.shrink()
                     : const SizedBox(height: 6.0),
               ],
             ),
           ),
-          imageUrl != null
+          (imageUrl != null)&&(imageUrl != "")
               ? Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: Image.network(imageUrl),
@@ -121,6 +121,10 @@ class _PostStats extends StatefulWidget{
 class _PostStatsState extends State<_PostStats> {
   bool liked = false;
 
+  handleLikePost(){
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -130,6 +134,7 @@ class _PostStatsState extends State<_PostStats> {
            setState((){
              liked = !liked;
            });
+           handleLikePost();
          },
 
           icon: !liked ? Icon(
